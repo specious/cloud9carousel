@@ -2,7 +2,7 @@
  * Cloud 9 Carousel
  *   Cleaned up, refactored, and improved version of CloudCarousel 
  *
- * Copyright (c) 2013 by Ildar Sagdejev ( twitter: @tknomad )
+ * Copyright (c) 2013 by Ildar Sagdejev ( Twitter: @tknomad )
  * Copyright (c) 2011 by R. Cecco ( http://www.professorcloud.com )
  * MIT License
  *
@@ -110,6 +110,7 @@
     this.yRadius = options.yRadius;
     this.showFrontTextTimer = 0;
     this.autoRotateTimer = 0;
+    this.onUpdated = options.onUpdated;
     if (options.xRadius === 0) {
       this.xRadius = ($(container).width()/2.3);
     }
@@ -221,8 +222,7 @@
 
     // Starts the rotation of the carousel. Direction is the number (+-) of carousel items to rotate by.
     this.rotate = function(direction) {
-      this.frontIndex -= direction;
-      this.frontIndex %= items.length;
+      this.frontIndex = (this.frontIndex - direction + items.length) % items.length;
       this.destRotation += ( Math.PI / items.length ) * ( 2*direction );
       this.showFrontText();
       this.go();
@@ -247,6 +247,22 @@
       var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
 
       item.moveTo(x, y, scale);
+    }
+
+    this.itemsRotated = function() {
+      return this.items.length * ((Math.PI/2) - this.rotation ) / (2*Math.PI);
+    }
+
+    this.floatIndex = function() {
+      var floatIndex = this.itemsRotated() % this.items.length;
+      return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;      
+    }
+    this.nearestIndex = function() {
+      return Math.round( this.floatIndex() ) % this.items.length;
+    }
+
+    this.nearestItem = function() {
+      return this.items[this.nearestIndex()];
     }
 
     // Main loop function that rotates the carousel.
@@ -276,10 +292,14 @@
 
       // If we have a preceptible change in rotation then loop again next frame.
       if ( absChange >= 0.001 ) {
-        this.controlTimer = setTimeout( function(){context.update();},this.timeDelay);
+        this.controlTimer = setTimeout(function() {context.update();}, this.timeDelay);
       } else {
         // Otherwise just stop completely.
         this.stop();
+      }
+
+      if( typeof this.onUpdated === 'function' ) {
+        this.onUpdated( this );
       }
     };
 
@@ -326,7 +346,8 @@
         autoRotateDelay: 1500,
         speed: 0.2,
         mouseWheel: false,
-        bringToFront: false
+        bringToFront: false,
+        onUpdated: null
       }, options );
 
       $(this).data('cloudcarousel', new Carousel(this, $('.cloudcarousel',$(this)), options));
