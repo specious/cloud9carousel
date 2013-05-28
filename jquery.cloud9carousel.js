@@ -70,6 +70,29 @@
 			this.reflection = new Reflection(this.image, this.options.reflHeight, this.options.reflOpacity);
 		}
 		$(this.image).css('position','absolute');  // Bizarre. This seems to reset image width to 0 on webkit!
+
+		this.moveTo = function(x, y, scale) {
+			var	container = this.image.parentNode;
+			var w = this.orgWidth * scale;
+			var h = this.orgHeight * scale;
+			container.style.width = w + "px";
+			container.style.height = h + "px";
+			container.style.left = x + "px" ;
+			container.style.top = y + "px";
+			container.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor(). Firefox doesn't like fractional decimals in z-index.
+
+			// The reflection is outside the image container so it doesn't resize automatically.
+			if (this.reflection !== null) {
+				var reflHeight = options.reflHeight * scale;
+				var style = this.reflection.element.style;
+				style.top = h + options.reflGap * scale + "px";
+				if ($.browser.msie) {
+					style.filter.finishy = (reflHeight / h * 100);
+				} else {
+					style.height = reflHeight + "px";
+				}
+			}
+		}
 	};
 
 	var Carousel = function(container, images, options) {
@@ -206,12 +229,22 @@
 			}
 		};
 
-		// Main loop function that moves the carousel.
-		this.update = function() {
+		this.rotateItem = function(itemIndex, rotation) {
+			var item = items[itemIndex];
+
 			var	minScale = options.minScale;	// This is the smallest scale applied to the furthest item.
 			var smallRange = (1-minScale) * 0.5;
-			var	w,h,x,y,scale,item,sinVal;
+			var sinVal = Math.sin(rotation);
+			var scale = ((sinVal+1) * smallRange) + minScale;
 
+			var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.orgWidth*0.5)) * scale);
+			var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
+
+			item.moveTo(x, y, scale);
+		}
+
+		// Main loop function that rotates the carousel.
+		this.update = function() {
 			var	change = (this.destRotation - this.rotation);
 			var	absChange = Math.abs(change);
 
@@ -220,51 +253,20 @@
 			var	numItems = items.length;
 			var	spacing = (Math.PI / numItems) * 2;
 			var	radians = this.rotation;
-			var	isMSIE = $.browser.msie;
 
 			// Turn off display. This can reduce repaints/reflows when making style and position changes in the loop.
 			// See http://dev.opera.com/articles/view/efficient-javascript/?page=3
 			this.innerWrapper.style.display = 'none';
 
-			var	style;
-			var	px = 'px', reflHeight;
-			var context = this;
-
 			for (var i = 0; i<numItems; i++) {
-				item = items[i];
-
-				sinVal = Math.sin(radians);
-				scale = ((sinVal+1) * smallRange) + minScale;
-
-				x = this.xCentre + (( (Math.cos(radians) * this.xRadius) - (item.orgWidth*0.5)) * scale);
-				y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
-
-				var	img = item.image.parentNode;
-				w = item.orgWidth * scale;
-				h = item.orgHeight * scale;
-				img.style.width = w + "px";
-				img.style.height = h + "px";
-				img.style.left = x + px ;
-				img.style.top = y + px;
-				img.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor(). Firefox doesn't like fractional decimals in z-index.
-
-				// The reflection is outside the image container so it doesn't resize automatically.
-				if (item.reflection !== null) {
-					reflHeight = options.reflHeight * scale;
-					style = item.reflection.element.style;
-					style.top = h + options.reflGap * scale + px;
-					if (isMSIE) {
-						style.filter.finishy = (reflHeight / h * 100);
-					} else {
-						style.height = reflHeight + px;
-					}
-				}
-
+				this.rotateItem(i, radians);
 				radians += spacing;
 			}
 
 			// Turn display back on.
 			this.innerWrapper.style.display = 'block';
+
+			var context = this;
 
 			// If we have a preceptible change in rotation then loop again next frame.
 			if ( absChange >= 0.001 ) {
