@@ -1,23 +1,20 @@
 /*
- * Forked from CloudCarousel V1.0.5 by R Cecco. <http://www.professorcloud.com>
+ * Cloud 9 Carousel
+ *   Cleaned up, refactored, and improved version of CloudCarousel 
  *
- * Copyright (c) 2013 by Ildar Sagdejev
+ * Copyright (c) 2013 by Ildar Sagdejev ( twitter: @tknomad )
+ * Copyright (c) 2011 by R. Cecco ( http://www.professorcloud.com )
+ * MIT License
+ *
+ * Forked from CloudCarousel V1.0.5 by R. Cecco <http://www.professorcloud.com>
+ * Reflection code based on plugin by Christophe Beyls <http://www.digitalia.be>
+ *
+ * Please retain this copyright header in all versions of the software
  */
-
-//////////////////////////////////////////////////////////////////////////////////
-// CloudCarousel V1.0.5
-// (c) 2011 by R Cecco. <http://www.professorcloud.com>
-// MIT License
-//
-// Reflection code based on plugin by Christophe Beyls <http://www.digitalia.be>
-//
-// Please retain this copyright header in all versions of the software
-//////////////////////////////////////////////////////////////////////////////////
 
 (function($) {
 	// Creates a reflection underneath an image.
 	// IE uses an image with IE specific filter properties, other browsers use the Canvas tag.
-	// The position and size of the reflection gets updated by updateAll() in Controller.
 	function Reflection(img, reflHeight, opacity) {
 		var	reflection, cntx, imageWidth = img.width, imageHeight = img.width, gradient, parent;
 
@@ -26,7 +23,9 @@
         if ( !reflection.getContext && $.browser.msie) {
 			this.element = reflection = parent.append("<img class='reflection' style='position:absolute' />").find(':last')[0];
 			reflection.src = img.src;
-			reflection.style.filter = "flipv progid:DXImageTransform.Microsoft.Alpha(opacity=" + (opacity * 100) + ", style=1, finishOpacity=0, startx=0, starty=0, finishx=0, finishy=" + (reflHeight / imageHeight * 100) + ")";
+			reflection.style.filter = "flipv progid:DXImageTransform.Microsoft.Alpha(opacity=" + (opacity * 100)
+									+ ", style=1, finishOpacity=0, startx=0, starty=0, finishx=0, finishy="
+									+ (reflHeight / imageHeight * 100) + ")";
         } else {
 			cntx = reflection.getContext("2d");
 			try {
@@ -36,6 +35,7 @@
 				cntx.scale(1, -1);
 				cntx.drawImage(img, 0, 0, imageWidth, imageHeight);
 				cntx.restore();
+
 				cntx.globalCompositeOperation = "destination-out";
 				gradient = cntx.createLinearGradient(0, 0, 0, reflHeight);
 				gradient.addColorStop(0, "rgba(255, 255, 255, " + (1 - opacity) + ")");
@@ -61,16 +61,19 @@
  		this.reflection = null;
 		this.options = options;
 
+		// Encapsulate the image in a div.
+		this.div = $(this.image).wrap('<div class="carousel-item" />').parent();
+		$(this.div).css('position','absolute');
+		this.image.style.width = "100%";
+
 		if (this.options.reflHeight > 0) {
 			this.reflection = new Reflection(this.image, this.options.reflHeight, this.options.reflOpacity);
 		}
 		$(this.image).css('position','absolute');  // Bizarre. This seems to reset image width to 0 on webkit!
 	};
 
-	// Controller object.
-	// This handles moving all the items, dealing with mouse clicks etc.
-	var Controller = function(container, images, options) {
-		var	items = [], funcSin = Math.sin, funcCos = Math.cos, ctx=this;
+	var Carousel = function(container, images, options) {
+		var	items = [], ctx = this;
 		this.controlTimer = 0;
 		this.stopped = false;
 		this.container = container;
@@ -153,10 +156,10 @@
 		// If we have moved out of a carousel item (or the container itself),
 		// restore the text of the front item in 1 second.
 		$(container).bind('mouseout',this,function(event) {
-				var	context = event.data;
-				clearTimeout(context.showFrontTextTimer);
-				context.showFrontTextTimer = setTimeout( function(){context.showFrontText();},1000);
-				context.autoRotate();	// Start auto rotation.
+			var	context = event.data;
+			clearTimeout(context.showFrontTextTimer);
+			context.showFrontTextTimer = setTimeout( function(){context.showFrontText();}, 1000 );
+			context.autoRotate();	// Start auto rotation.
 		});
 
 		// Prevent items from being selected as mouse is moved and clicked in the container.
@@ -171,15 +174,15 @@
 		// Shows the text from the front most item.
 		this.showFrontText = function() {
 			if ( items[this.frontIndex] !== undefined ) {
-				$(options.titleBox).html( $(items[this.frontIndex].image).attr('title'));
-				$(options.altBox).html( $(items[this.frontIndex].image).attr('alt'));
+				$(options.titleBox).html($(items[this.frontIndex].image).attr('title'));
+				$(options.altBox).html($(items[this.frontIndex].image).attr('alt'));
 			}
 		};
 
 		this.go = function() {
 			if(this.controlTimer !== 0) { return; }
 			var	context = this;
-			this.controlTimer = setTimeout( function(){context.updateAll();},this.timeDelay );
+			this.controlTimer = setTimeout( function(){context.update();},this.timeDelay );
 		};
 
 		this.stop = function() {
@@ -203,8 +206,8 @@
 			}
 		};
 
-		// This is the main loop function that moves everything.
-		this.updateAll = function() {
+		// Main loop function that moves the carousel.
+		this.update = function() {
 			var	minScale = options.minScale;	// This is the smallest scale applied to the furthest item.
 			var smallRange = (1-minScale) * 0.5;
 			var	w,h,x,y,scale,item,sinVal;
@@ -214,8 +217,8 @@
 
 			this.rotation += change * options.speed;
 			if ( absChange < 0.001 ) { this.rotation = this.destRotation; }
-			var	itemsLen = items.length;
-			var	spacing = (Math.PI / itemsLen) * 2;
+			var	numItems = items.length;
+			var	spacing = (Math.PI / numItems) * 2;
 			var	radians = this.rotation;
 			var	isMSIE = $.browser.msie;
 
@@ -227,29 +230,29 @@
 			var	px = 'px', reflHeight;
 			var context = this;
 
-			for (var i = 0; i<itemsLen ;i++) {
+			for (var i = 0; i<numItems; i++) {
 				item = items[i];
 
-				sinVal = funcSin(radians);
-
+				sinVal = Math.sin(radians);
 				scale = ((sinVal+1) * smallRange) + minScale;
 
-				x = this.xCentre + (( (funcCos(radians) * this.xRadius) - (item.orgWidth*0.5)) * scale);
-				y = this.yCentre + (( (sinVal * this.yRadius)  ) * scale);
+				x = this.xCentre + (( (Math.cos(radians) * this.xRadius) - (item.orgWidth*0.5)) * scale);
+				y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
 
-				var	img = item.image;
-				w = img.width = item.orgWidth * scale;
-				h = img.height = item.orgHeight * scale;
+				var	img = item.image.parentNode;
+				w = item.orgWidth * scale;
+				h = item.orgHeight * scale;
+				img.style.width = w + "px";
+				img.style.height = h + "px";
 				img.style.left = x + px ;
 				img.style.top = y + px;
 				img.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor(). Firefox doesn't like fractional decimals in z-index.
 
+				// The reflection is outside the image container so it doesn't resize automatically.
 				if (item.reflection !== null) {
 					reflHeight = options.reflHeight * scale;
 					style = item.reflection.element.style;
-					style.left = x + px;
-					style.top = y + h + options.reflGap * scale + px;
-					style.width = w + px;
+					style.top = h + options.reflGap * scale + px;
 					if (isMSIE) {
 						style.filter.finishy = (reflHeight / h * 100);
 					} else {
@@ -265,7 +268,7 @@
 
 			// If we have a preceptible change in rotation then loop again next frame.
 			if ( absChange >= 0.001 ) {
-				this.controlTimer = setTimeout( function(){context.updateAll();},this.timeDelay);
+				this.controlTimer = setTimeout( function(){context.update();},this.timeDelay);
 			} else {
 				// Otherwise just stop completely.
 				this.stop();
@@ -289,13 +292,14 @@
 			clearInterval(this.tt);
 			this.showFrontText();
 			this.autoRotate();
-			this.updateAll();
+			this.update();
 		};
 
 		this.tt = setInterval( function(){ctx.checkImagesLoaded();}, 50 );
 	};
 
-	// The jQuery plugin part. Iterates through items specified in selector and inits a Controller class for each one.
+	// The jQuery plugin.
+	// Creates a Carousel object for each item in the selector.
 	$.fn.CloudCarousel = function(options) {
 		this.each( function() {
 			options = $.extend( {}, {
@@ -317,8 +321,7 @@
 				bringToFront: false
 			}, options );
 
-			// Create a Controller for each carousel.
-			$(this).data('cloudcarousel', new Controller(this, $('.cloudcarousel',$(this)), options));
+			$(this).data('cloudcarousel', new Carousel(this, $('.cloudcarousel',$(this)), options));
 		} );
 		return this;
 	};
