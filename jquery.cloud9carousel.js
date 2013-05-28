@@ -72,9 +72,13 @@
 		$(this.image).css('position','absolute');  // Bizarre. This seems to reset image width to 0 on webkit!
 
 		this.moveTo = function(x, y, scale) {
+			var w = this.width = this.orgWidth * scale;
+			var h = this.height = this.orgHeight * scale;
+			this.x = x;
+			this.y = y;
+			this.scale = scale;
+
 			var	container = this.image.parentNode;
-			var w = this.orgWidth * scale;
-			var h = this.orgHeight * scale;
 			container.style.width = w + "px";
 			container.style.height = h + "px";
 			container.style.left = x + "px" ;
@@ -96,7 +100,9 @@
 	};
 
 	var Carousel = function(container, images, options) {
-		var	items = [], ctx = this;
+		var	items = [];
+		var ctx = this;
+		this.items = items;
 		this.controlTimer = 0;
 		this.stopped = false;
 		this.container = container;
