@@ -19,9 +19,9 @@
     var reflection, cntx, imageWidth = img.width, imageHeight = img.width, gradient, parent;
 
     parent = $(img.parentNode);
-    this.element = reflection = parent.append("<canvas class='reflection' style='position:absolute' />").find(':last')[0];
+    this.element = reflection = parent.append("<canvas class='cloud9-mirror' style='position:absolute'>").find(':last')[0];
     if ( !reflection.getContext && $.browser.msie) {
-      this.element = reflection = parent.append("<img class='reflection' style='position:absolute' />").find(':last')[0];
+      this.element = reflection = parent.append("<img class='cloud9-mirror' style='position:absolute'>").find(':last')[0];
       reflection.src = img.src;
       reflection.style.filter = "flipv progid:DXImageTransform.Microsoft.Alpha(opacity=" + (opacity * 100)
                   + ", style=1, finishOpacity=0, startx=0, starty=0, finishx=0, finishy="
@@ -62,7 +62,7 @@
     this.options = options;
 
     // Encapsulate the image in a div.
-    this.div = $(this.image).wrap('<div class="carousel-item" />').parent();
+    this.div = $(this.image).wrap('<div class="cloud9-item" />').parent();
     $(this.div).css('position','absolute');
     this.image.style.width = "100%";
 
@@ -327,9 +327,9 @@
   };
 
   // The jQuery plugin.
-  // Creates a Carousel object for each item in the selector.
-  $.fn.CloudCarousel = function(options) {
-    this.each( function() {
+  // Creates a carousel object for each item in the selector.
+  $.fn.Cloud9Carousel = function(options) {
+    return this.each( function() {
       options = $.extend( {}, {
         reflHeight: 0,
         reflOpacity: 0.5,
@@ -341,6 +341,7 @@
         yRadius: 0,
         altBox: null,
         titleBox: null,
+        itemClass: 'cloud9-image',
         FPS: 30,
         autoRotate: 'no',
         autoRotateDelay: 1500,
@@ -350,8 +351,7 @@
         onUpdated: null
       }, options );
 
-      $(this).data('cloudcarousel', new Carousel(this, $('.cloudcarousel',$(this)), options));
+      $(this).data('cloudcarousel', new Carousel(this, $('.'+options.itemClass, $(this)), options));
     } );
-    return this;
   };
 })(jQuery);
