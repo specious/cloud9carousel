@@ -132,6 +132,8 @@
       $(options.titleBox).css('display','block');
     }
 
+    this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
+
     // Turn on relative position for container to allow absolutely positioned elements
     // within it to work.
     $(container).css( {position:'relative', overflow:'hidden'} );
@@ -139,67 +141,67 @@
     $(options.buttonLeft).css('display','inline');
     $(options.buttonRight).css('display','inline');
 
-    // Setup the buttons.
-    $(options.buttonLeft).bind('mouseup',this,function(event) {
-      event.data.rotate(-1);
-      return false;
-    });
-    $(options.buttonRight).bind('mouseup',this,function(event) {
-      event.data.rotate(1);
-      return false;
-    });
-
-    // You will need this plugin for the mousewheel to work: http://plugins.jquery.com/project/mousewheel
-    if (options.mouseWheel) {
-      $(container).bind('mousewheel',this,function(event, delta) {
-        event.data.rotate(delta);
+    this.bindControls = function () {
+      // Setup the buttons.
+      $(options.buttonLeft).bind('mouseup',this,function(event) {
+        event.data.rotate(-1);
         return false;
       });
-    }
+      $(options.buttonRight).bind('mouseup',this,function(event) {
+        event.data.rotate(1);
+        return false;
+      });
 
-    $(container).bind('mouseover click',this,function(event) {
-      // Stop auto rotation if mouse over.
-      clearInterval(event.data.autoRotateTimer);
-
-      var text = $(event.target).attr('alt');
-
-      // If we have moved over a carousel item, then show the alt and title text.
-      if ( text !== undefined && text !== null ) {
-        clearTimeout(event.data.showFrontTextTimer);
-        
-        $(options.altBox).html( ($(event.target).attr('alt') ));
-        $(options.titleBox).html( ($(event.target).attr('title') ));
-
-        if ( options.bringToFront && event.type == 'click' ) {
-          var idx = $(event.target).data('itemIndex');
-          var frontIndex = event.data.frontIndex;
-                    var diff = (idx - frontIndex) % images.length;
-                    if (Math.abs(diff) > images.length / 2) {
-                        diff += (diff > 0 ? -images.length : images.length);
-                    }
-
-          event.data.rotate(-diff);
-        }
+      // You will need this plugin for the mousewheel to work: http://plugins.jquery.com/project/mousewheel
+      if (options.mouseWheel) {
+        $(container).bind('mousewheel',this,function(event, delta) {
+          event.data.rotate(delta);
+          return false;
+        });
       }
-    });
 
-    // If we have moved out of a carousel item (or the container itself),
-    // restore the text of the front item in 1 second.
-    $(container).bind('mouseout',this,function(event) {
-      var context = event.data;
-      clearTimeout(context.showFrontTextTimer);
-      context.showFrontTextTimer = setTimeout( function(){context.showFrontText();}, 1000 );
-      context.autoRotate(); // Start auto rotation.
-    });
+      $(container).bind('mouseover click',this,function(event) {
+        // Stop auto rotation if mouse over.
+        clearInterval(event.data.autoRotateTimer);
 
-    // Prevent items from being selected as mouse is moved and clicked in the container.
-    $(container).bind('mousedown',this,function(event) {
-      event.data.container.focus();
-      return false;
-    });
-    container.onselectstart = function () { return false; }; // For IE.
+        var text = $(event.target).attr('alt');
 
-    this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
+        // If we have moved over a carousel item, then show the alt and title text.
+        if ( text !== undefined && text !== null ) {
+          clearTimeout(event.data.showFrontTextTimer);
+
+          $(options.altBox).html( ($(event.target).attr('alt') ));
+          $(options.titleBox).html( ($(event.target).attr('title') ));
+
+          if ( options.bringToFront && event.type == 'click' ) {
+            var idx = $(event.target).data('itemIndex');
+            var frontIndex = event.data.frontIndex;
+                      var diff = (idx - frontIndex) % images.length;
+                      if (Math.abs(diff) > images.length / 2) {
+                          diff += (diff > 0 ? -images.length : images.length);
+                      }
+
+            event.data.rotate(-diff);
+          }
+        }
+      });
+
+      // If we have moved out of a carousel item (or the container itself),
+      // restore the text of the front item in 1 second.
+      $(container).bind('mouseout',this,function(event) {
+        var context = event.data;
+        clearTimeout(context.showFrontTextTimer);
+        context.showFrontTextTimer = setTimeout( function(){context.showFrontText();}, 1000 );
+        context.autoRotate(); // Start auto rotation.
+      });
+
+      // Prevent items from being selected as mouse is moved and clicked in the container.
+      $(container).bind('mousedown',this,function(event) {
+        event.data.container.focus();
+        return false;
+      });
+      container.onselectstart = function () { return false; }; // For IE.
+    }
 
     // Shows the text from the front most item.
     this.showFrontText = function() {
@@ -318,6 +320,7 @@
 
       // If all images have valid widths and heights, we can stop checking.
       clearInterval(this.tt);
+      this.bindControls();
       this.showFrontText();
       this.autoRotate();
       this.update();
@@ -351,7 +354,7 @@
         onUpdated: null
       }, options );
 
-      $(this).data('cloudcarousel', new Carousel(this, $('.'+options.itemClass, $(this)), options));
+      $(this).data('cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options));
     } );
   };
 })(jQuery);
