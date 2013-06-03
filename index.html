@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!--
+    Programming by Ildar Sagdejev (Twitter: @tknomad)
+  -->
+  <meta charset="UTF-8">
+  <title>Cloud 9 Carousel: JavaScript + HTML5 + CSS</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <h1>The incredible Cloud 9 Carousel</h1>
+  <div id="wrap">
+    <div id="showcase" class="noselect">
+      <img class="cloud9-image" src="images/browsers/firefox.png" alt="Firefox">
+      <img class="cloud9-image" src="images/browsers/wyzo.png" alt="Wyzo">
+      <img class="cloud9-image" src="images/browsers/opera.png" alt="Opera">
+      <img class="cloud9-image" src="images/browsers/chrome.png" alt="Chrome">
+      <img class="cloud9-image" src="images/browsers/iexplore.png" alt="Internet Explorer">
+      <img class="cloud9-image" src="images/browsers/safari.png" alt="Safari">
+    </div>
+    <p id="item-title">&nbsp;</p>
+    <div id="nav-buttons" class="noselect">
+      <button id="nav-left" class="nav-button">
+        ←
+      </button>
+      <button id="nav-right" class="nav-button">
+        →
+      </button>
+    </div>
+    <p id="get">
+      <a href="http://github.com/specious/cloud9carousel">Download the source at GitHub</a>
+    </p>
+    <div id="credits">
+      <h2>Credits:</h2>
+      <ul>
+        <li>
+          Original <a href="http://www.professorcloud.com/mainsite/carousel.htm">CloudCarousel</a> by <span class="author">Professor Cloud</span>
+        </li>
+        <li>
+          <a href="http://www.digitalia.be/software/reflectionjs-for-jquery">Reflection code</a> by <span class="author">Christophe Beyls</span>
+        </li>
+        <li>
+          Improvements by <a href="http://twitter.com/tknomad">Ildar Sagdejev</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script src="js/lib/jquery.js"></script>
+  <script src="js/lib/jquery.cloud9carousel.js"></script>
+  <script>
+    $(function() {
+      var showcase = $("#showcase")
+
+      showcase.Cloud9Carousel({
+        xPos: showcase.width() * 0.5,
+        yPos: 42,
+        yRadius: 48,
+        reflHeight: 56,
+        reflGap: 2,
+        speed: 0.13,
+        buttonLeft: $("#nav-left"),
+        buttonRight: $("#nav-right"),
+        onUpdated: showcaseUpdated
+      })
+
+      // Cloud9Carousel messes it up on init
+      $(".nav-button").css('display', 'inline-block')
+
+      showcase.css('visibility', 'visible')
+      showcase.css('display', 'none')
+      showcase.fadeIn(1500)
+
+      function showcaseUpdated( showcase ) {
+        var title = $('#item-title').html(
+          $(showcase.nearestItem().image).attr('alt')
+        )
+
+        var c = Math.cos((showcase.floatIndex() % 1) * 2 * Math.PI)
+        title.css('opacity', 0.5 + (0.5 * c))
+      }
+
+      // Simulate button click
+      $('.nav-button').click( function(e) {
+        var b = $(e.target).addClass( 'down' )
+        setTimeout( function() { b.removeClass( 'down' ) }, 80 )
+
+        // Trigger "mouse up" which carousel has bound to move action
+        b.mouseup()
+      } )
+
+      //
+      // Keyboard arrow keys
+      //
+      $(document).keydown(function(e) {
+        //
+        // More codes: http://www.javascripter.net/faq/keycodes.htm
+        //
+        switch( e.keyCode ) {
+          /* left arrow */
+          case 37:
+            $('#nav-left').click()
+            break;
+
+          /* right arrow */
+          case 39:
+            $('#nav-right').click()
+        }
+      })
+    })
+  </script>
+</body>
+</html>
