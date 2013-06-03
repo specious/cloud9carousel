@@ -143,11 +143,11 @@
 
     this.bindControls = function () {
       // Setup the buttons.
-      $(options.buttonLeft).bind('mouseup',this,function(event) {
+      $(options.buttonLeft).bind('click',this,function(event) {
         event.data.rotate(-1);
         return false;
       });
-      $(options.buttonRight).bind('mouseup',this,function(event) {
+      $(options.buttonRight).bind('click',this,function(event) {
         event.data.rotate(1);
         return false;
       });
