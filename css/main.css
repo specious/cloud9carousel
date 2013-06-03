@@ -118,6 +118,15 @@ h1 {
   font-size: 20px;
   text-align: center;
 }
+#share {
+  position: absolute;
+  left: 4px;
+  top: 478px;
+}
+.twitter-share-button {
+  width: 84px !important;
+  margin-left: 8px;
+}
 #credits {
   color: #c9c9c9;
   padding: 10px;

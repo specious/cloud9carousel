@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <h1>The incredible Cloud 9 Carousel</h1>
+  <h1>The incredible Cloud 9 Carousel</h1>
   <div id="wrap">
     <div id="showcase" class="noselect">
       <img class="cloud9-image" src="images/browsers/firefox.png" alt="Firefox">
@@ -31,6 +31,11 @@
     <p id="get">
       <a href="http://github.com/specious/cloud9carousel">Download the source at GitHub</a>
     </p>
+    <div id="share">
+      <div class="fb-like" data-href="http://specious.github.io/cloud9carousel/" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+      <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://specious.github.io/cloud9carousel/" data-count="horizontal"></a>
+      <div class="g-plusone" data-size="medium" data-annotation="bubble" data-expandto="bottom"></div>
+    </div>
     <div id="credits">
       <h2>Credits:</h2>
       <ul>
@@ -80,13 +85,10 @@
         title.css('opacity', 0.5 + (0.5 * c))
       }
 
-      // Simulate button click
+      // Simulate physical button click effect
       $('.nav-button').click( function(e) {
         var b = $(e.target).addClass( 'down' )
         setTimeout( function() { b.removeClass( 'down' ) }, 80 )
-
-        // Trigger "mouse up" which carousel has bound to move action
-        b.mouseup()
       } )
 
       //
@@ -109,5 +111,6 @@
       })
     })
   </script>
+  <script src="js/social.js"></script>
 </body>
 </html>
