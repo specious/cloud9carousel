@@ -2,9 +2,15 @@
 
 Cleaned up, refactored, and improved version of [CloudCarousel](http://www.professorcloud.com/mainsite/carousel.htm) by Professor Cloud.
 
+Try the **[demo](http://specious.github.io/cloud9carousel/)**!
+
 ## Documentation
 
 [Usage instructions](http://www.professorcloud.com/mainsite/carousel-integration.htm) can be found on Professor Cloud's web page.
+
+## Known Issues
+
+Does not work with jQuery 1.9 or later, pending migration according to [this guide](http://jquery.com/upgrade-guide/1.9/).
 
 ## License
 
