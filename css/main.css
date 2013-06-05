@@ -118,6 +118,16 @@ h1 {
   font-size: 20px;
   text-align: center;
 }
+#download {
+  margin: 8px auto;
+  margin-top: 12px;
+  display: block;
+}
+#license {
+  font-size: 18px;
+  text-align: center;
+  margin: 0;
+}
 #share {
   position: absolute;
   left: 4px;

@@ -12,12 +12,12 @@
   <h1>The incredible Cloud 9 Carousel</h1>
   <div id="wrap">
     <div id="showcase" class="noselect">
-      <img class="cloud9-image" src="images/browsers/firefox.png" alt="Firefox">
-      <img class="cloud9-image" src="images/browsers/wyzo.png" alt="Wyzo">
-      <img class="cloud9-image" src="images/browsers/opera.png" alt="Opera">
-      <img class="cloud9-image" src="images/browsers/chrome.png" alt="Chrome">
-      <img class="cloud9-image" src="images/browsers/iexplore.png" alt="Internet Explorer">
-      <img class="cloud9-image" src="images/browsers/safari.png" alt="Safari">
+      <img class="cloud9-item" src="images/browsers/firefox.png" alt="Firefox">
+      <img class="cloud9-item" src="images/browsers/wyzo.png" alt="Wyzo">
+      <img class="cloud9-item" src="images/browsers/opera.png" alt="Opera">
+      <img class="cloud9-item" src="images/browsers/chrome.png" alt="Chrome">
+      <img class="cloud9-item" src="images/browsers/iexplore.png" alt="Internet Explorer">
+      <img class="cloud9-item" src="images/browsers/safari.png" alt="Safari">
     </div>
     <p id="item-title">&nbsp;</p>
     <div id="nav-buttons" class="noselect">
@@ -28,13 +28,14 @@
         →
       </button>
     </div>
-    <p id="get">
-      <a href="http://github.com/specious/cloud9carousel">Download the source at GitHub</a>
-    </p>
+    <div id="get">
+      <a id="download" href="http://github.com/specious/cloud9carousel">Download the source at GitHub</a>
+      <p id="license">MIT License</p>
+    </div>
     <div id="share">
       <div class="fb-like" data-href="http://specious.github.io/cloud9carousel/" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
       <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://specious.github.io/cloud9carousel/" data-count="horizontal"></a>
-      <div class="g-plusone" data-size="medium" data-annotation="bubble" data-expandto="bottom"></div>
+      <div class="g-plusone" data-href="http://specious.github.io/cloud9carousel/" data-size="medium" data-annotation="bubble" data-expandto="bottom"></div>
     </div>
     <div id="credits">
       <h2>Credits:</h2>
@@ -43,15 +44,16 @@
           Original <a href="http://www.professorcloud.com/mainsite/carousel.htm">CloudCarousel</a> by <span class="author">Professor Cloud</span>
         </li>
         <li>
-          <a href="http://www.digitalia.be/software/reflectionjs-for-jquery">Reflection code</a> by <span class="author">Christophe Beyls</span>
+          Improvements by <a href="http://twitter.com/tknomad">Ildar Sagdejev</a>
         </li>
         <li>
-          Improvements by <a href="http://twitter.com/tknomad">Ildar Sagdejev</a>
+          <a href="http://www.digitalia.be/software/reflectionjs-for-jquery">Reflection plugin</a> by <span class="author">Christophe Beyls</span>
         </li>
       </ul>
     </div>
   </div>
   <script src="js/lib/jquery.js"></script>
+  <script src="js/lib/jquery.reflect.js"></script>
   <script src="js/lib/jquery.cloud9carousel.js"></script>
   <script>
     $(function() {
@@ -61,8 +63,10 @@
         xPos: showcase.width() * 0.5,
         yPos: 42,
         yRadius: 48,
-        reflHeight: 56,
-        reflGap: 2,
+        mirrorOptions: {
+          gap: 12,
+          height: 0.2
+        },
         speed: 0.13,
         buttonLeft: $("#nav-left"),
         buttonRight: $("#nav-right"),
