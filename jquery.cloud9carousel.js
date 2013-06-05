@@ -1,105 +1,79 @@
 /*
  * Cloud 9 Carousel
- *   Cleaned up, refactored, and improved version of CloudCarousel 
+ *   Cleaned up, refactored, and improved version of CloudCarousel
+ *
+ * Get the latest version from GitHub:
+ *   http://specious.github.io/cloud9carousel/
  *
  * Copyright (c) 2013 by Ildar Sagdejev ( Twitter: @tknomad )
  * Copyright (c) 2011 by R. Cecco ( http://www.professorcloud.com )
  * MIT License
  *
- * Forked from CloudCarousel V1.0.5 by R. Cecco <http://www.professorcloud.com>
- * Reflection code based on plugin by Christophe Beyls <http://www.digitalia.be>
- *
  * Please retain this copyright header in all versions of the software
+ * 
+ * Requires:
+ *  - jQuery
+ *
+ * Optional:
+ *  - reflection.js plugin by Christophe Beyls
+ *     http://www.digitalia.be/software/reflectionjs-for-jquery
+ *  - mousewheel plugin
+ *     http://plugins.jquery.com/mousewheel/
  */
 
 (function($) {
-  // Creates a reflection underneath an image.
-  // IE uses an image with IE specific filter properties, other browsers use the Canvas tag.
-  function Reflection(img, reflHeight, opacity) {
-    var reflection, cntx, imageWidth = img.width, imageHeight = img.width, gradient, parent;
-
-    parent = $(img.parentNode);
-    this.element = reflection = parent.append("<canvas class='cloud9-mirror' style='position:absolute'>").find(':last')[0];
-    if ( !reflection.getContext && $.browser.msie) {
-      this.element = reflection = parent.append("<img class='cloud9-mirror' style='position:absolute'>").find(':last')[0];
-      reflection.src = img.src;
-      reflection.style.filter = "flipv progid:DXImageTransform.Microsoft.Alpha(opacity=" + (opacity * 100)
-                  + ", style=1, finishOpacity=0, startx=0, starty=0, finishx=0, finishy="
-                  + (reflHeight / imageHeight * 100) + ")";
-    } else {
-      cntx = reflection.getContext("2d");
-      try {
-        $(reflection).attr({width: imageWidth, height: reflHeight});
-        cntx.save();
-        cntx.translate(0, imageHeight-1);
-        cntx.scale(1, -1);
-        cntx.drawImage(img, 0, 0, imageWidth, imageHeight);
-        cntx.restore();
-
-        cntx.globalCompositeOperation = "destination-out";
-        gradient = cntx.createLinearGradient(0, 0, 0, reflHeight);
-        gradient.addColorStop(0, "rgba(255, 255, 255, " + (1 - opacity) + ")");
-        gradient.addColorStop(1, "rgba(255, 255, 255, 1.0)");
-        cntx.fillStyle = gradient;
-        cntx.fillRect(0, 0, imageWidth, reflHeight);
-      } catch(e) {
-        return;
-      }
-    }
-
-    // Store a copy of the alt and title attrs into the reflection
-    $(reflection).attr({ 'alt': $(img).attr('alt'), title: $(img).attr('title')} );
-  }
-
-  // A wrapper object for items within the carousel.
-  var Item = function(imgIn, options) {
-    this.image = imgIn;
-    this.orgWidth = imgIn.width;
-    this.orgHeight = imgIn.height;
-    this.alt = imgIn.alt;
-    this.title = imgIn.title;
+  var Item = function( image, options ) {
+    this.image = image;
+    this.fullWidth = image.width;
+    this.fullHeight = image.height;
+    this.alt = image.alt;
+    this.title = image.title;
     this.reflection = null;
     this.options = options;
 
-    // Encapsulate the image in a div.
-    this.div = $(this.image).wrap('<div class="cloud9-item" />').parent();
-    $(this.div).css('position','absolute');
-    this.image.style.width = "100%";
+    $(this.image).css('position','absolute');
 
-    if (this.options.reflHeight > 0) {
-      this.reflection = new Reflection(this.image, this.options.reflHeight, this.options.reflOpacity);
+    // Create item reflection, which puts the image and its reflection into
+    // a new container div
+    if (this.options.mirrorOptions) {
+      this.reflection = $( $(this.image).reflect(options.mirrorOptions) ).next()[0];
+      this.reflection.fullHeight = $(this.reflection).height();
+      $(this.reflection).css('position','absolute');
+      $(this.image).css('width','100%');
     }
-    $(this.image).css('position','absolute');  // Bizarre. This seems to reset image width to 0 on webkit!
 
-    this.moveTo = function(x, y, scale) {
-      var w = this.width = this.orgWidth * scale;
-      var h = this.height = this.orgHeight * scale;
+    this.moveTo = function( x, y, scale ) {
+      var w = this.width = this.fullWidth * scale;
+      var h = this.height = this.fullHeight * scale;
       this.x = x;
       this.y = y;
       this.scale = scale;
 
-      var container = this.image.parentNode;
+      var container = (this.reflection === null) ? this.image : this.image.parentNode;
       container.style.width = w + "px";
       container.style.height = h + "px";
-      container.style.left = x + "px" ;
+      container.style.left = x + "px";
       container.style.top = y + "px";
-      container.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor(). Firefox doesn't like fractional decimals in z-index.
+      container.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor()
 
-      // The reflection is outside the image container so it doesn't resize automatically.
-      if (this.reflection !== null) {
-        var reflHeight = options.reflHeight * scale;
-        var style = this.reflection.element.style;
-        style.top = h + options.reflGap * scale + "px";
-        if ($.browser.msie) {
-          style.filter.finishy = (reflHeight / h * 100);
+      if (this.options.mirrorOptions) {
+        var hMirror = this.reflection.fullHeight * scale;
+        var hGap = options.mirrorOptions.gap * scale;
+
+        container.style.height = h + hGap + hMirror + "px";
+        var style = this.reflection.style;
+        style.top = (h + hGap) + "px";
+
+        if (!window.ActiveXObject) {
+          style.width = w + "px";
         } else {
-          style.height = reflHeight + "px";
+          style.filter.finishy = (hMirror / h * 100);
         }
       }
     }
   };
 
-  var Carousel = function(container, images, options) {
+  var Carousel = function( container, images, options ) {
     var items = [];
     var ctx = this;
     this.items = items;
@@ -117,6 +91,9 @@
     if (options.yRadius === 0) {
       this.yRadius = ($(container).height()/6);
     }
+    options.mirrorOptions = $.extend( {
+      gap: 2
+    }, options.mirrorOptions );
 
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
@@ -143,11 +120,11 @@
 
     this.bindControls = function () {
       // Setup the buttons.
-      $(options.buttonLeft).bind('mouseup',this,function(event) {
+      $(options.buttonLeft).bind('click',this,function(event) {
         event.data.rotate(-1);
         return false;
       });
-      $(options.buttonRight).bind('mouseup',this,function(event) {
+      $(options.buttonRight).bind('click',this,function(event) {
         event.data.rotate(1);
         return false;
       });
@@ -245,7 +222,7 @@
       var sinVal = Math.sin(rotation);
       var scale = ((sinVal+1) * smallRange) + minScale;
 
-      var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.orgWidth*0.5)) * scale);
+      var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.fullWidth*0.5)) * scale);
       var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
 
       item.moveTo(x, y, scale);
@@ -331,20 +308,18 @@
 
   // The jQuery plugin.
   // Creates a carousel object for each item in the selector.
-  $.fn.Cloud9Carousel = function(options) {
+  $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
       options = $.extend( {}, {
-        reflHeight: 0,
-        reflOpacity: 0.5,
-        reflGap: 0,
-        minScale: 0.5,
         xPos: 0,
         yPos: 0,
         xRadius: 0,
         yRadius: 0,
+        minScale: 0.5,
+        mirrorOptions: {},
         altBox: null,
         titleBox: null,
-        itemClass: 'cloud9-image',
+        itemClass: 'cloud9-item',
         FPS: 30,
         autoRotate: 'no',
         autoRotateDelay: 1500,
@@ -354,7 +329,7 @@
         onUpdated: null
       }, options );
 
-      $(this).data('cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options));
+      $(this).data( 'cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options) );
     } );
   };
 })(jQuery);
