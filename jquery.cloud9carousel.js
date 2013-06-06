@@ -10,7 +10,7 @@
  * MIT License
  *
  * Please retain this copyright header in all versions of the software
- * 
+ *
  * Requires:
  *  - jQuery
  *
@@ -84,6 +84,7 @@
     this.yRadius = options.yRadius;
     this.showFrontTextTimer = 0;
     this.autoRotateTimer = 0;
+    this.onLoaded = options.onLoaded;
     this.onUpdated = options.onUpdated;
     if (options.xRadius === 0) {
       this.xRadius = ($(container).width()/2.3);
@@ -277,20 +278,19 @@
         this.stop();
       }
 
-      if( typeof this.onUpdated === 'function' ) {
+      if( typeof this.onUpdated === 'function' )
         this.onUpdated( this );
-      }
     };
 
     // Check if images have loaded. We need valid widths and heights for the reflections.
     this.checkImagesLoaded = function() {
-      var i;
-      for(i=0; i<images.length; i++) {
+      for( var i = 0; i < images.length; i++ ) {
         if ( (images[i].width === undefined) || ((images[i].complete !== undefined) && (!images[i].complete)) ) {
           return;
         }
       }
-      for(i=0; i<images.length; i++) {
+
+      for( i = 0; i < images.length; i++ ) {
          items.push(new Item( images[i], options ));
          $(images[i]).data('itemIndex',i);
       }
@@ -301,6 +301,9 @@
       this.showFrontText();
       this.autoRotate();
       this.update();
+
+      if( typeof this.onLoaded === 'function' )
+        this.onLoaded( this );
     };
 
     this.tt = setInterval( function(){ctx.checkImagesLoaded();}, 50 );
@@ -325,8 +328,7 @@
         autoRotateDelay: 1500,
         speed: 0.2,
         mouseWheel: false,
-        bringToFront: false,
-        onUpdated: null
+        bringToFront: false
       }, options );
 
       $(this).data( 'cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options) );
