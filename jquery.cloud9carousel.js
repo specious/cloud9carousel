@@ -31,15 +31,16 @@
     this.reflection = null;
     this.options = options;
 
-    $(this.image).css('position','absolute');
+    $(this.image).css('position', 'absolute');
 
     // Create item reflection, which puts the image and its reflection into
     // a new container div
     if (this.options.mirrorOptions) {
       this.reflection = $( $(this.image).reflect(options.mirrorOptions) ).next()[0];
       this.reflection.fullHeight = $(this.reflection).height();
-      $(this.reflection).css('position','absolute');
-      $(this.image).css('width','100%');
+      $(this.reflection).css('margin-top', options.mirrorOptions.gap + 'px');
+      $(this.reflection).css('width', '100%');
+      $(this.image).css('width', '100%');
     }
 
     this.moveTo = function( x, y, scale ) {
@@ -61,14 +62,7 @@
         var hGap = options.mirrorOptions.gap * scale;
 
         container.style.height = h + hGap + hMirror + "px";
-        var style = this.reflection.style;
-        style.top = (h + hGap) + "px";
-
-        if (!window.ActiveXObject) {
-          style.width = w + "px";
-        } else {
-          style.filter.finishy = (hMirror / h * 100);
-        }
+        this.reflection.style.marginTop = hGap + "px";
       }
     }
   };
@@ -80,21 +74,18 @@
     this.controlTimer = 0;
     this.stopped = false;
     this.container = container;
-    this.xRadius = options.xRadius;
-    this.yRadius = options.yRadius;
+    this.xRadius = (options.xRadius === 0) ? $(container).width()/2.3 : options.xRadius;
+    this.yRadius = (options.yRadius === 0) ? $(container).height()/6  : options.yRadius;
     this.showFrontTextTimer = 0;
     this.autoRotateTimer = 0;
     this.onLoaded = options.onLoaded;
     this.onUpdated = options.onUpdated;
-    if (options.xRadius === 0) {
-      this.xRadius = ($(container).width()/2.3);
+
+    if( options.mirrorOptions ) {
+      options.mirrorOptions = $.extend( {
+        gap: 2
+      }, options.mirrorOptions );
     }
-    if (options.yRadius === 0) {
-      this.yRadius = ($(container).height()/6);
-    }
-    options.mirrorOptions = $.extend( {
-      gap: 2
-    }, options.mirrorOptions );
 
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
@@ -319,7 +310,7 @@
         xRadius: 0,
         yRadius: 0,
         minScale: 0.5,
-        mirrorOptions: {},
+        mirrorOptions: false,
         altBox: null,
         titleBox: null,
         itemClass: 'cloud9-item',
