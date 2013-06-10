@@ -106,15 +106,15 @@
     $(options.buttonRight).css('display','inline');
 
     this.bindControls = function () {
-      // Setup the buttons.
-      $(options.buttonLeft).bind('click',this,function(event) {
+      $(options.buttonLeft).bind( 'click', this, function(event) {
         event.data.rotate(-1);
         return false;
-      });
-      $(options.buttonRight).bind('click',this,function(event) {
+      } );
+
+      $(options.buttonRight).bind( 'click', this, function(event) {
         event.data.rotate(1);
         return false;
-      });
+      } );
 
       // You will need this plugin for the mousewheel to work: http://plugins.jquery.com/project/mousewheel
       if (options.mouseWheel) {
@@ -125,7 +125,7 @@
       }
 
       if( options.bringToFront ) {
-        $(container).bind( 'click', this, function( event ) {
+        $(container).bind( 'click.cloud9', this, function( event ) {
           var item = $(event.target).closest( '.' + options.itemClass )[0].item;
           var idx = event.data.items.indexOf( item );
 
@@ -138,22 +138,24 @@
       }
 
       // Stop auto rotation on mouse over
-      $(container).bind('mouseover',this,function(event) {
+      $(container).bind( 'mouseover.cloud9', this, function(event) {
         clearInterval(event.data.autoRotateTimer);
-      });
+      } );
 
       // Resume auto rotation on mouse out
-      $(container).bind('mouseout',this,function(event) {
+      $(container).bind( 'mouseout.cloud9', this, function(event) {
         var context = event.data;
         context.autoRotate(); // Start auto rotation.
-      });
+      } );
 
-      // Prevent items from being selected as mouse is moved and clicked in the container.
-      $(container).bind('mousedown',this,function(event) {
+      // Prevent items from being selected by click-dragging inside the container
+      $(container).bind( 'mousedown', this, function(event) {
         event.data.container.focus();
         return false;
-      });
-      container.onselectstart = function () { return false; }; // For IE.
+      } );
+
+      // Same in IE
+      container.onselectstart = function () { return false };
     }
 
     this.go = function() {
@@ -166,6 +168,15 @@
       clearTimeout(this.controlTimer);
       this.controlTimer = 0;
     };
+
+    // Deactivate the carousel
+    this.halt = function() {
+      this.stop();
+
+      $(options.buttonLeft).unbind( 'click' );
+      $(options.buttonRight).unbind( 'click' );
+      $(container).unbind( '.cloud9' );
+    }
 
     // Starts the rotation of the carousel. Direction is the number (+-) of carousel items to rotate by.
     this.rotate = function(direction) {
