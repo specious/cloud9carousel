@@ -24,6 +24,7 @@
 (function($) {
   var Item = function( image, options ) {
     this.image = image;
+    this.image.item = this;
     this.fullWidth = image.width;
     this.fullHeight = image.height;
     this.alt = image.alt;
@@ -41,18 +42,21 @@
       $(this.reflection).css('margin-top', options.mirrorOptions.gap + 'px');
       $(this.reflection).css('width', '100%');
       $(this.image).css('width', '100%');
+
+      // Transfer the item handle to the new wrapper container
+      this.image.parentNode.item = this.image.item;
     }
 
     this.moveTo = function( x, y, scale ) {
-      var w = this.width = this.fullWidth * scale;
-      var h = this.height = this.fullHeight * scale;
+      this.width = this.fullWidth * scale;
+      this.height = this.fullHeight * scale;
       this.x = x;
       this.y = y;
       this.scale = scale;
 
       var container = (this.reflection === null) ? this.image : this.image.parentNode;
-      container.style.width = w + "px";
-      container.style.height = h + "px";
+      container.style.width = this.width + "px";
+      container.style.height = this.height + "px";
       container.style.left = x + "px";
       container.style.top = y + "px";
       container.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor()
@@ -61,7 +65,7 @@
         var hMirror = this.reflection.fullHeight * scale;
         var hGap = options.mirrorOptions.gap * scale;
 
-        container.style.height = h + hGap + hMirror + "px";
+        container.style.height = this.height + hGap + hMirror + "px";
         this.reflection.style.marginTop = hGap + "px";
       }
     }
@@ -72,11 +76,9 @@
     var ctx = this;
     this.items = items;
     this.controlTimer = 0;
-    this.stopped = false;
     this.container = container;
     this.xRadius = (options.xRadius === 0) ? $(container).width()/2.3 : options.xRadius;
     this.yRadius = (options.yRadius === 0) ? $(container).height()/6  : options.yRadius;
-    this.showFrontTextTimer = 0;
     this.autoRotateTimer = 0;
     this.onLoaded = options.onLoaded;
     this.onUpdated = options.onUpdated;
@@ -89,17 +91,10 @@
 
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
-    this.frontIndex = 0; // Index of the item at the front
 
     // Start with the first item at the front.
     this.rotation = this.destRotation = Math.PI/2;
     this.timeDelay = 1000/options.FPS;
-
-    // Turn on the infoBox
-    if(options.altBox !== null) {
-      $(options.altBox).css('display','block');
-      $(options.titleBox).css('display','block');
-    }
 
     this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
 
@@ -129,38 +124,27 @@
         });
       }
 
-      $(container).bind('mouseover click',this,function(event) {
-        // Stop auto rotation if mouse over.
+      if( options.bringToFront ) {
+        $(container).bind( 'click', this, function( event ) {
+          var item = $(event.target).closest( '.' + options.itemClass )[0].item;
+          var idx = event.data.items.indexOf( item );
+
+          var diff = (idx - event.data.floatIndex()) % images.length;
+          if (Math.abs(diff) > images.length / 2)
+            diff += (diff > 0 ? -images.length : images.length);
+
+          event.data.rotate(-diff);
+        });
+      }
+
+      // Stop auto rotation on mouse over
+      $(container).bind('mouseover',this,function(event) {
         clearInterval(event.data.autoRotateTimer);
-
-        var text = $(event.target).attr('alt');
-
-        // If we have moved over a carousel item, then show the alt and title text.
-        if ( text !== undefined && text !== null ) {
-          clearTimeout(event.data.showFrontTextTimer);
-
-          $(options.altBox).html( ($(event.target).attr('alt') ));
-          $(options.titleBox).html( ($(event.target).attr('title') ));
-
-          if ( options.bringToFront && event.type == 'click' ) {
-            var idx = $(event.target).data('itemIndex');
-            var frontIndex = event.data.frontIndex;
-                      var diff = (idx - frontIndex) % images.length;
-                      if (Math.abs(diff) > images.length / 2) {
-                          diff += (diff > 0 ? -images.length : images.length);
-                      }
-
-            event.data.rotate(-diff);
-          }
-        }
       });
 
-      // If we have moved out of a carousel item (or the container itself),
-      // restore the text of the front item in 1 second.
+      // Resume auto rotation on mouse out
       $(container).bind('mouseout',this,function(event) {
         var context = event.data;
-        clearTimeout(context.showFrontTextTimer);
-        context.showFrontTextTimer = setTimeout( function(){context.showFrontText();}, 1000 );
         context.autoRotate(); // Start auto rotation.
       });
 
@@ -171,14 +155,6 @@
       });
       container.onselectstart = function () { return false; }; // For IE.
     }
-
-    // Shows the text from the front most item.
-    this.showFrontText = function() {
-      if ( items[this.frontIndex] !== undefined ) {
-        $(options.titleBox).html($(items[this.frontIndex].image).attr('title'));
-        $(options.altBox).html($(items[this.frontIndex].image).attr('alt'));
-      }
-    };
 
     this.go = function() {
       if(this.controlTimer !== 0) { return; }
@@ -193,22 +169,22 @@
 
     // Starts the rotation of the carousel. Direction is the number (+-) of carousel items to rotate by.
     this.rotate = function(direction) {
-      this.frontIndex = (this.frontIndex - direction + items.length) % items.length;
       this.destRotation += ( Math.PI / items.length ) * ( 2*direction );
-      this.showFrontText();
       this.go();
     };
 
     this.autoRotate = function() {
-      if ( options.autoRotate !== 'no' ) {
+      if( options.autoRotate !== false ) {
         var dir = (options.autoRotate === 'right') ? 1 : -1;
-        this.autoRotateTimer = setInterval( function(){ctx.rotate(dir); }, options.autoRotateDelay );
+        this.autoRotateTimer = setInterval(
+          function() { ctx.rotate(dir) },
+          options.autoRotateDelay
+        );
       }
     };
 
     this.rotateItem = function(itemIndex, rotation) {
       var item = items[itemIndex];
-
       var minScale = options.minScale;  // This is the smallest scale applied to the furthest item.
       var smallRange = (1-minScale) * 0.5;
       var sinVal = Math.sin(rotation);
@@ -281,15 +257,12 @@
         }
       }
 
-      for( i = 0; i < images.length; i++ ) {
+      for( i = 0; i < images.length; i++ )
          items.push(new Item( images[i], options ));
-         $(images[i]).data('itemIndex',i);
-      }
 
       // If all images have valid widths and heights, we can stop checking.
       clearInterval(this.tt);
       this.bindControls();
-      this.showFrontText();
       this.autoRotate();
       this.update();
 
@@ -311,13 +284,11 @@
         yRadius: 0,
         minScale: 0.5,
         mirrorOptions: false,
-        altBox: null,
-        titleBox: null,
         itemClass: 'cloud9-item',
         FPS: 30,
-        autoRotate: 'no',
-        autoRotateDelay: 1500,
         speed: 0.2,
+        autoRotate: false,
+        autoRotateDelay: 1500,
         mouseWheel: false,
         bringToFront: false
       }, options );

@@ -2,7 +2,9 @@
 
 Cleaned up, refactored, and improved version of [CloudCarousel](http://www.professorcloud.com/mainsite/carousel.htm) by Professor Cloud.
 
-Try the **[demo](http://specious.github.io/cloud9carousel/)**!
+##Try the **[demo](http://specious.github.io/cloud9carousel/)**!  See websites using it:
+
+<a href="http://www.julemagne.com/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/usage-shots/julemagne.png "Julemagne.com")</a>
 
 ## Dependencies
 
