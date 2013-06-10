@@ -10,7 +10,7 @@
  * MIT License
  *
  * Please retain this copyright header in all versions of the software
- * 
+ *
  * Requires:
  *  - jQuery
  *
@@ -24,6 +24,7 @@
 (function($) {
   var Item = function( image, options ) {
     this.image = image;
+    this.image.item = this;
     this.fullWidth = image.width;
     this.fullHeight = image.height;
     this.alt = image.alt;
@@ -31,27 +32,31 @@
     this.reflection = null;
     this.options = options;
 
-    $(this.image).css('position','absolute');
+    $(this.image).css('position', 'absolute');
 
     // Create item reflection, which puts the image and its reflection into
     // a new container div
     if (this.options.mirrorOptions) {
       this.reflection = $( $(this.image).reflect(options.mirrorOptions) ).next()[0];
       this.reflection.fullHeight = $(this.reflection).height();
-      $(this.reflection).css('position','absolute');
-      $(this.image).css('width','100%');
+      $(this.reflection).css('margin-top', options.mirrorOptions.gap + 'px');
+      $(this.reflection).css('width', '100%');
+      $(this.image).css('width', '100%');
+
+      // Transfer the item handle to the new wrapper container
+      this.image.parentNode.item = this.image.item;
     }
 
     this.moveTo = function( x, y, scale ) {
-      var w = this.width = this.fullWidth * scale;
-      var h = this.height = this.fullHeight * scale;
+      this.width = this.fullWidth * scale;
+      this.height = this.fullHeight * scale;
       this.x = x;
       this.y = y;
       this.scale = scale;
 
       var container = (this.reflection === null) ? this.image : this.image.parentNode;
-      container.style.width = w + "px";
-      container.style.height = h + "px";
+      container.style.width = this.width + "px";
+      container.style.height = this.height + "px";
       container.style.left = x + "px";
       container.style.top = y + "px";
       container.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor()
@@ -60,15 +65,8 @@
         var hMirror = this.reflection.fullHeight * scale;
         var hGap = options.mirrorOptions.gap * scale;
 
-        container.style.height = h + hGap + hMirror + "px";
-        var style = this.reflection.style;
-        style.top = (h + hGap) + "px";
-
-        if (!window.ActiveXObject) {
-          style.width = w + "px";
-        } else {
-          style.filter.finishy = (hMirror / h * 100);
-        }
+        container.style.height = this.height + hGap + hMirror + "px";
+        this.reflection.style.marginTop = hGap + "px";
       }
     }
   };
@@ -78,36 +76,25 @@
     var ctx = this;
     this.items = items;
     this.controlTimer = 0;
-    this.stopped = false;
     this.container = container;
-    this.xRadius = options.xRadius;
-    this.yRadius = options.yRadius;
-    this.showFrontTextTimer = 0;
+    this.xRadius = (options.xRadius === 0) ? $(container).width()/2.3 : options.xRadius;
+    this.yRadius = (options.yRadius === 0) ? $(container).height()/6  : options.yRadius;
     this.autoRotateTimer = 0;
+    this.onLoaded = options.onLoaded;
     this.onUpdated = options.onUpdated;
-    if (options.xRadius === 0) {
-      this.xRadius = ($(container).width()/2.3);
+
+    if( options.mirrorOptions ) {
+      options.mirrorOptions = $.extend( {
+        gap: 2
+      }, options.mirrorOptions );
     }
-    if (options.yRadius === 0) {
-      this.yRadius = ($(container).height()/6);
-    }
-    options.mirrorOptions = $.extend( {
-      gap: 2
-    }, options.mirrorOptions );
 
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
-    this.frontIndex = 0; // Index of the item at the front
 
     // Start with the first item at the front.
     this.rotation = this.destRotation = Math.PI/2;
     this.timeDelay = 1000/options.FPS;
-
-    // Turn on the infoBox
-    if(options.altBox !== null) {
-      $(options.altBox).css('display','block');
-      $(options.titleBox).css('display','block');
-    }
 
     this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
 
@@ -137,38 +124,27 @@
         });
       }
 
-      $(container).bind('mouseover click',this,function(event) {
-        // Stop auto rotation if mouse over.
+      if( options.bringToFront ) {
+        $(container).bind( 'click', this, function( event ) {
+          var item = $(event.target).closest( '.' + options.itemClass )[0].item;
+          var idx = event.data.items.indexOf( item );
+
+          var diff = (idx - event.data.floatIndex()) % images.length;
+          if (Math.abs(diff) > images.length / 2)
+            diff += (diff > 0 ? -images.length : images.length);
+
+          event.data.rotate(-diff);
+        });
+      }
+
+      // Stop auto rotation on mouse over
+      $(container).bind('mouseover',this,function(event) {
         clearInterval(event.data.autoRotateTimer);
-
-        var text = $(event.target).attr('alt');
-
-        // If we have moved over a carousel item, then show the alt and title text.
-        if ( text !== undefined && text !== null ) {
-          clearTimeout(event.data.showFrontTextTimer);
-
-          $(options.altBox).html( ($(event.target).attr('alt') ));
-          $(options.titleBox).html( ($(event.target).attr('title') ));
-
-          if ( options.bringToFront && event.type == 'click' ) {
-            var idx = $(event.target).data('itemIndex');
-            var frontIndex = event.data.frontIndex;
-                      var diff = (idx - frontIndex) % images.length;
-                      if (Math.abs(diff) > images.length / 2) {
-                          diff += (diff > 0 ? -images.length : images.length);
-                      }
-
-            event.data.rotate(-diff);
-          }
-        }
       });
 
-      // If we have moved out of a carousel item (or the container itself),
-      // restore the text of the front item in 1 second.
+      // Resume auto rotation on mouse out
       $(container).bind('mouseout',this,function(event) {
         var context = event.data;
-        clearTimeout(context.showFrontTextTimer);
-        context.showFrontTextTimer = setTimeout( function(){context.showFrontText();}, 1000 );
         context.autoRotate(); // Start auto rotation.
       });
 
@@ -179,14 +155,6 @@
       });
       container.onselectstart = function () { return false; }; // For IE.
     }
-
-    // Shows the text from the front most item.
-    this.showFrontText = function() {
-      if ( items[this.frontIndex] !== undefined ) {
-        $(options.titleBox).html($(items[this.frontIndex].image).attr('title'));
-        $(options.altBox).html($(items[this.frontIndex].image).attr('alt'));
-      }
-    };
 
     this.go = function() {
       if(this.controlTimer !== 0) { return; }
@@ -201,22 +169,22 @@
 
     // Starts the rotation of the carousel. Direction is the number (+-) of carousel items to rotate by.
     this.rotate = function(direction) {
-      this.frontIndex = (this.frontIndex - direction + items.length) % items.length;
       this.destRotation += ( Math.PI / items.length ) * ( 2*direction );
-      this.showFrontText();
       this.go();
     };
 
     this.autoRotate = function() {
-      if ( options.autoRotate !== 'no' ) {
+      if( options.autoRotate !== false ) {
         var dir = (options.autoRotate === 'right') ? 1 : -1;
-        this.autoRotateTimer = setInterval( function(){ctx.rotate(dir); }, options.autoRotateDelay );
+        this.autoRotateTimer = setInterval(
+          function() { ctx.rotate(dir) },
+          options.autoRotateDelay
+        );
       }
     };
 
     this.rotateItem = function(itemIndex, rotation) {
       var item = items[itemIndex];
-
       var minScale = options.minScale;  // This is the smallest scale applied to the furthest item.
       var smallRange = (1-minScale) * 0.5;
       var sinVal = Math.sin(rotation);
@@ -277,30 +245,29 @@
         this.stop();
       }
 
-      if( typeof this.onUpdated === 'function' ) {
+      if( typeof this.onUpdated === 'function' )
         this.onUpdated( this );
-      }
     };
 
     // Check if images have loaded. We need valid widths and heights for the reflections.
     this.checkImagesLoaded = function() {
-      var i;
-      for(i=0; i<images.length; i++) {
+      for( var i = 0; i < images.length; i++ ) {
         if ( (images[i].width === undefined) || ((images[i].complete !== undefined) && (!images[i].complete)) ) {
           return;
         }
       }
-      for(i=0; i<images.length; i++) {
+
+      for( i = 0; i < images.length; i++ )
          items.push(new Item( images[i], options ));
-         $(images[i]).data('itemIndex',i);
-      }
 
       // If all images have valid widths and heights, we can stop checking.
       clearInterval(this.tt);
       this.bindControls();
-      this.showFrontText();
       this.autoRotate();
       this.update();
+
+      if( typeof this.onLoaded === 'function' )
+        this.onLoaded( this );
     };
 
     this.tt = setInterval( function(){ctx.checkImagesLoaded();}, 50 );
@@ -316,17 +283,14 @@
         xRadius: 0,
         yRadius: 0,
         minScale: 0.5,
-        mirrorOptions: {},
-        altBox: null,
-        titleBox: null,
+        mirrorOptions: false,
         itemClass: 'cloud9-item',
         FPS: 30,
-        autoRotate: 'no',
-        autoRotateDelay: 1500,
         speed: 0.2,
+        autoRotate: false,
+        autoRotateDelay: 1500,
         mouseWheel: false,
-        bringToFront: false,
-        onUpdated: null
+        bringToFront: false
       }, options );
 
       $(this).data( 'cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options) );
