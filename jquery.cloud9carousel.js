@@ -2,10 +2,10 @@
  * Cloud 9 Carousel
  *   Cleaned up, refactored, and improved version of CloudCarousel
  *
- * Get the latest version from GitHub:
+ * Get the latest version on GitHub:
  *   http://specious.github.io/cloud9carousel/
  *
- * Copyright (c) 2013 by Ildar Sagdejev ( Twitter: @tknomad )
+ * Copyright (c) 2014 by Ildar Sagdejev ( http://twitter.com/tknomad )
  * Copyright (c) 2011 by R. Cecco ( http://www.professorcloud.com )
  * MIT License
  *
@@ -145,17 +145,18 @@
       // Resume auto rotation on mouse out
       $(container).bind( 'mouseout.cloud9', this, function(event) {
         var context = event.data;
-        context.autoRotate(); // Start auto rotation.
+        context.autoRotate();
       } );
 
       // Prevent items from being selected by click-dragging inside the container
       $(container).bind( 'mousedown', this, function(event) {
-        event.data.container.focus();
         return false;
       } );
 
       // Same in IE
-      container.onselectstart = function () { return false };
+      container.onselectstart = function () {
+        return false;
+      };
     }
 
     this.go = function() {
@@ -213,7 +214,7 @@
 
     this.floatIndex = function() {
       var floatIndex = this.itemsRotated() % this.items.length;
-      return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;      
+      return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;
     }
     this.nearestIndex = function() {
       return Math.round( this.floatIndex() ) % this.items.length;
@@ -263,13 +264,14 @@
     // Check if images have loaded. We need valid widths and heights for the reflections.
     this.checkImagesLoaded = function() {
       for( var i = 0; i < images.length; i++ ) {
-        if ( (images[i].width === undefined) || ((images[i].complete !== undefined) && (!images[i].complete)) ) {
+        var im = images[i];
+        if ( (im.width === undefined) || ((im.complete !== undefined) && (!im.complete)) ) {
           return;
         }
       }
 
       for( i = 0; i < images.length; i++ )
-         items.push(new Item( images[i], options ));
+        items.push(new Item( images[i], options ));
 
       // If all images have valid widths and heights, we can stop checking.
       clearInterval(this.tt);
