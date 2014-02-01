@@ -144,25 +144,21 @@
 
       // Resume auto rotation on mouse out
       $(container).bind( 'mouseout.cloud9', this, function(event) {
-        var context = event.data;
-        context.autoRotate();
+        event.data.autoRotate();
       } );
 
       // Prevent items from being selected by click-dragging inside the container
-      $(container).bind( 'mousedown', this, function(event) {
-        return false;
-      } );
+      $(container).bind( 'mousedown', this, function() { return false; } );
 
       // Same in IE
-      container.onselectstart = function () {
-        return false;
-      };
+      container.onselectstart = function () { return false; };
     }
 
     this.go = function() {
-      if(this.controlTimer !== 0) { return; }
-      var context = this;
-      this.controlTimer = setTimeout( function(){context.update();},this.timeDelay );
+      if( this.controlTimer === 0 ) {
+        var context = this;
+        this.controlTimer = setTimeout( function(){ context.update(); }, this.timeDelay );
+      }
     };
 
     this.stop = function() {
@@ -197,7 +193,7 @@
 
     this.rotateItem = function(itemIndex, rotation) {
       var item = items[itemIndex];
-      var minScale = options.minScale;  // This is the smallest scale applied to the furthest item.
+      var minScale = options.minScale; // scale of the farthest item
       var smallRange = (1-minScale) * 0.5;
       var sinVal = Math.sin(rotation);
       var scale = ((sinVal+1) * smallRange) + minScale;
