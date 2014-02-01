@@ -12,9 +12,9 @@ html {
 body {
   height: 100%;
   color: #eee;
+  background: #020223;
   margin: 0;
   overflow-x: hidden;
-  background: #020223;
 }
 a {
   color: #C2D62D;
@@ -46,11 +46,8 @@ h1 {
   background: -o-linear-gradient(top, #16235e 0%, #020223 100%); /* Opera 11.10+ */
   background: -ms-linear-gradient(top, #16235e 0%, #020223 100%); /* IE10+ */
   background: linear-gradient(to bottom, #16235e 0%, #020223 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#16235e', endColorstr='#020223', GradientType=0); /* IE6-9 */
   -webkit-box-shadow: 0px 0px 13px 5px #DB1242;
   -moz-box-shadow: 0px 0px 13px 5px #DB1242;
-  -ms-box-shadow: 0px 0px 13px 5px #DB1242;
-  -o-box-shadow: 0px 0px 13px 5px #DB1242;
   box-shadow: 0px 0px 13px 5px #DB1242;
   border-radius: 8px;
   margin-top: 12px;
@@ -81,14 +78,10 @@ h1 {
   background: #f6f6f6;
   border: solid 2px rgba(0, 0, 0, 0.4);
   -webkit-border-radius: 5px;
-  -khtml-border-radius: 5px;
   -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
   border-radius: 5px;
   -webkit-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
-  -o-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
   cursor:pointer;
 }
@@ -127,7 +120,6 @@ h1 {
   border: 2px #cecece dashed;
   -webkit-box-shadow: 0 0px 8px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: 0 0px 8px rgba(0, 0, 0, 0.6);
-  -o-box-shadow: 0 0px 8px rgba(0, 0, 0, 0.6);
   box-shadow: 0 0px 8px rgba(0, 0, 0, 0.6);
   position: absolute;
   right: 0;
