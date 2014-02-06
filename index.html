@@ -23,10 +23,10 @@
     </div>
     <p id="item-title">&nbsp;</p>
     <div id="nav-buttons" class="noselect">
-      <button id="nav-left" class="nav-button">
+      <button id="nav-left">
         ←
       </button>
-      <button id="nav-right" class="nav-button">
+      <button id="nav-right">
         →
       </button>
     </div>
@@ -42,10 +42,9 @@
       <div class="g-plusone" data-href="http://specious.github.io/cloud9carousel/" data-size="medium" data-annotation="bubble" data-expandto="bottom"></div>
     </div>
     <div id="credits">
-      <h2>Credits:</h2>
       <ul>
         <li>
-          Original <a href="http://www.professorcloud.com/mainsite/carousel.htm">CloudCarousel</a> by <span class="author">Professor Cloud</span>
+          Original <a href="http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html">CloudCarousel</a> by <span class="author">Professor Cloud</span>
         </li>
         <li>
           Improvements by <a href="http://twitter.com/tknomad">Ildar Sagdejev</a>
@@ -84,7 +83,7 @@
       })
 
       // Cloud9Carousel messes it up on init
-      $(".nav-button").css('display', 'inline-block')
+      $("#nav-buttons > button").css('display', 'inline-block')
 
       function showcaseUpdated( showcase ) {
         var title = $('#item-title').html(
@@ -96,7 +95,7 @@
       }
 
       // Simulate physical button click effect
-      $('.nav-button').click( function(e) {
+      $('#nav-buttons > button').click( function(e) {
         var b = $(e.target).addClass( 'down' )
         setTimeout( function() { b.removeClass( 'down' ) }, 80 )
       } )
@@ -112,7 +111,7 @@
           /* left arrow */
           case 37:
             $('#nav-left').click()
-            break;
+            break
 
           /* right arrow */
           case 39:

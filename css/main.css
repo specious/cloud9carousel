@@ -17,8 +17,9 @@ body {
   overflow-x: hidden;
 }
 a {
-  color: #C2D62D;
+  color: #DA2020;
   font-weight: bold;
+  text-decoration: none;
 }
 a:hover {
   color: #D6F300;
@@ -69,7 +70,7 @@ h1 {
 #nav-buttons {
   text-align: center;
 }
-.nav-button {
+#nav-buttons > button {
   width: 64px;
   height: 36px;
   color: #666;
@@ -86,10 +87,10 @@ h1 {
   -webkit-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
-  cursor:pointer;
+  cursor: pointer;
 }
-.nav-button:active,
-.nav-button.down {
+#nav-buttons > button:active,
+#nav-buttons > button.down {
   background: #dfdfdf;
   border: solid 2px rgba(0, 0, 0, 0.6);
   box-shadow: none;
@@ -123,23 +124,15 @@ h1 {
 #credits {
   color: #c9c9c9;
   padding: 10px;
-  border: 2px #cecece dashed;
-  -webkit-box-shadow: 0 0px 8px rgba(0, 0, 0, 0.6);
-  -moz-box-shadow: 0 0px 8px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.6);
+  border: 2px #999 dashed;
   position: absolute;
   right: 0;
-  bottom: 32px;
-}
-#credits h2 {
-  font-size: 18px;
-  margin-top: 0;
-  margin-bottom: 4px;
+  bottom: 83px;
 }
 #credits ul {
   font-size: 14px;
   list-style-type: none;
-  padding-left: 12px;
+  padding-left: 2px;
   margin: 2px 0;
 }
 #credits .author {
