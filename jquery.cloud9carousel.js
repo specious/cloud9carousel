@@ -226,30 +226,20 @@
       var absChange = Math.abs(change);
 
       this.rotation += change * options.speed;
-      if ( absChange < 0.001 ) { this.rotation = this.destRotation; }
+      if( absChange < 0.001 ) { this.rotation = this.destRotation; }
       var numItems = items.length;
       var spacing = (Math.PI / numItems) * 2;
       var radians = this.rotation;
 
-      // Turn off display. This can reduce repaints/reflows when making style and position changes in the loop.
-      // See http://dev.opera.com/articles/view/efficient-javascript/?page=3
-      this.innerWrapper.style.display = 'none';
-
-      for (var i = 0; i<numItems; i++) {
+      for( var i = 0; i < numItems; i++ ) {
         this.rotateItem(i, radians);
         radians += spacing;
       }
 
-      // Turn display back on.
-      this.innerWrapper.style.display = 'block';
-
-      var context = this;
-
-      // If we have a preceptible change in rotation then loop again next frame.
-      if ( absChange >= 0.001 ) {
+      if( absChange >= 0.001 ) {
+        var context = this;
         this.controlTimer = setTimeout(function() {context.update();}, this.timeDelay);
       } else {
-        // Otherwise just stop completely.
         this.stop();
       }
 
@@ -261,7 +251,7 @@
     this.checkImagesLoaded = function() {
       for( var i = 0; i < images.length; i++ ) {
         var im = images[i];
-        if ( (im.width === undefined) || ((im.complete !== undefined) && (!im.complete)) ) {
+        if( (im.width === undefined) || ((im.complete !== undefined) && (!im.complete)) ) {
           return;
         }
       }
