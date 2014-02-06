@@ -59,7 +59,7 @@
       container.style.height = this.height + "px";
       container.style.left = x + "px";
       container.style.top = y + "px";
-      container.style.zIndex = "" + (scale * 100)>>0; // >>0 = Math.foor()
+      container.style.zIndex = "" + (scale * 100)|0;
 
       if (this.options.mirrorOptions) {
         var hMirror = this.reflection.fullHeight * scale;
