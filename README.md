@@ -18,11 +18,11 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://www.profe
 
 ## Documentation
 
-[Usage instructions](http://www.professorcloud.com/mainsite/carousel-integration.htm) can be found on Professor Cloud's web page.
+See the [example code](https://github.com/specious/cloud9carousel/blob/gh-pages/index.html), or see [original usage instructions](http://www.professorcloud.com/mainsite/carousel-integration.htm) on Professor Cloud's website.
 
 ## Authors
 
-- Improvements by [Ildar Sagdejev](http://twitter.com/tknomad)
+- Upgrades by [Ildar Sagdejev](http://twitter.com/tknomad)
 - Forked from CloudCarousel v1.0.5 by [Professor Cloud](http://www.professorcloud.com/) (R. Cecco)
 
 ## License

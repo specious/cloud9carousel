@@ -2,7 +2,7 @@
  * Cloud 9 Carousel
  *   Cleaned up, refactored, and improved version of CloudCarousel
  *
- * Get the latest version on GitHub:
+ * See the demo and get the latest version on GitHub:
  *   http://specious.github.io/cloud9carousel/
  *
  * Copyright (c) 2014 by Ildar Sagdejev ( http://twitter.com/tknomad )
@@ -15,9 +15,9 @@
  *  - jQuery
  *
  * Optional:
- *  - reflection.js plugin by Christophe Beyls
+ *  - Reflection support via reflection.js plugin by Christophe Beyls
  *     http://www.digitalia.be/software/reflectionjs-for-jquery
- *  - mousewheel plugin
+ *  - Mousewheel support via mousewheel plugin
  *     http://plugins.jquery.com/mousewheel/
  */
 
@@ -32,18 +32,19 @@
     this.reflection = null;
     this.options = options;
 
-    $(this.image).css('position', 'absolute');
+    $(this.image).css( 'position', 'absolute' );
 
-    // Create item reflection, which puts the image and its reflection into
-    // a new container div
-    if (this.options.mirrorOptions) {
+    //
+    // Generate item reflection and wrap image and reflection in a new div
+    //
+    if( this.options.mirrorOptions ) {
       this.reflection = $( $(this.image).reflect(options.mirrorOptions) ).next()[0];
       this.reflection.fullHeight = $(this.reflection).height();
       $(this.reflection).css('margin-top', options.mirrorOptions.gap + 'px');
       $(this.reflection).css('width', '100%');
       $(this.image).css('width', '100%');
 
-      // Transfer the item handle to the new wrapper container
+      // Pass the item handle to the wrapper container
       this.image.parentNode.item = this.image.item;
     }
 
@@ -61,7 +62,7 @@
       container.style.top = y + "px";
       container.style.zIndex = "" + (scale * 100)|0;
 
-      if (this.options.mirrorOptions) {
+      if( this.options.mirrorOptions ) {
         var hMirror = this.reflection.fullHeight * scale;
         var hGap = options.mirrorOptions.gap * scale;
 
@@ -98,30 +99,29 @@
 
     this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
 
-    // Turn on relative position for container to allow absolutely positioned elements
-    // within it to work.
     $(container).css( {position:'relative', overflow:'hidden'} );
-
     $(options.buttonLeft).css('display','inline');
     $(options.buttonRight).css('display','inline');
 
-    this.bindControls = function () {
-      $(options.buttonLeft).bind( 'click', this, function(event) {
-        event.data.rotate(-1);
+    this.bindControls = function() {
+      $(options.buttonLeft).bind( 'click', this, function( event ) {
+        event.data.rotate( -1 );
         return false;
       } );
 
-      $(options.buttonRight).bind( 'click', this, function(event) {
-        event.data.rotate(1);
+      $(options.buttonRight).bind( 'click', this, function( event ) {
+        event.data.rotate( 1 );
         return false;
       } );
 
-      // You will need this plugin for the mousewheel to work: http://plugins.jquery.com/project/mousewheel
-      if (options.mouseWheel) {
-        $(container).bind('mousewheel',this,function(event, delta) {
-          event.data.rotate(delta);
+      //
+      // Optional mousewheel support (requires plugin: http://plugins.jquery.com/mousewheel)
+      //
+      if( options.mouseWheel ) {
+        $(container).bind( 'mousewheel', this, function( event, delta ) {
+          event.data.rotate( delta );
           return false;
-        });
+        } );
       }
 
       if( options.bringToFront ) {
@@ -130,34 +130,34 @@
           var idx = event.data.items.indexOf( item );
 
           var diff = (idx - event.data.floatIndex()) % images.length;
-          if (Math.abs(diff) > images.length / 2)
-            diff += (diff > 0 ? -images.length : images.length);
+          if( Math.abs(diff) > images.length / 2 )
+            diff += (diff > 0) ? -images.length : images.length;
 
-          event.data.rotate(-diff);
+          event.data.rotate( -diff );
         });
       }
 
       // Stop auto rotation on mouse over
-      $(container).bind( 'mouseover.cloud9', this, function(event) {
-        clearInterval(event.data.autoRotateTimer);
+      $(container).bind( 'mouseover.cloud9', this, function( event ) {
+        clearInterval( event.data.autoRotateTimer );
       } );
 
       // Resume auto rotation on mouse out
-      $(container).bind( 'mouseout.cloud9', this, function(event) {
+      $(container).bind( 'mouseout.cloud9', this, function( event ) {
         event.data.autoRotate();
       } );
 
       // Prevent items from being selected by click-dragging inside the container
-      $(container).bind( 'mousedown', this, function() { return false; } );
+      $(container).bind( 'mousedown', this, function() { return false } );
 
       // Same in IE
-      container.onselectstart = function () { return false; };
+      container.onselectstart = function() { return false };
     }
 
     this.go = function() {
       if( this.controlTimer === 0 ) {
         var context = this;
-        this.controlTimer = setTimeout( function(){ context.update(); }, this.timeDelay );
+        this.controlTimer = setTimeout( function() { context.update() }, this.timeDelay );
       }
     };
 
@@ -166,7 +166,9 @@
       this.controlTimer = 0;
     };
 
+    //
     // Deactivate the carousel
+    //
     this.halt = function() {
       this.stop();
 
@@ -175,9 +177,11 @@
       $(container).unbind( '.cloud9' );
     }
 
-    // Starts the rotation of the carousel. Direction is the number (+-) of carousel items to rotate by.
-    this.rotate = function(direction) {
-      this.destRotation += ( Math.PI / items.length ) * ( 2*direction );
+    //
+    // Start the rotation of the carousel. Direction is the number (+-) of carousel items to rotate by.
+    //
+    this.rotate = function( direction ) {
+      this.destRotation += (2 * Math.PI / items.length) * direction;
       this.go();
     };
 
@@ -191,7 +195,7 @@
       }
     };
 
-    this.rotateItem = function(itemIndex, rotation) {
+    this.rotateItem = function( itemIndex, rotation ) {
       var item = items[itemIndex];
       var minScale = options.minScale; // scale of the farthest item
       var smallRange = (1-minScale) * 0.5;
@@ -205,13 +209,14 @@
     }
 
     this.itemsRotated = function() {
-      return this.items.length * ((Math.PI/2) - this.rotation ) / (2*Math.PI);
+      return this.items.length * ((Math.PI/2) - this.rotation) / (2*Math.PI);
     }
 
     this.floatIndex = function() {
       var floatIndex = this.itemsRotated() % this.items.length;
       return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;
     }
+
     this.nearestIndex = function() {
       return Math.round( this.floatIndex() ) % this.items.length;
     }
@@ -220,25 +225,27 @@
       return this.items[this.nearestIndex()];
     }
 
-    // Main loop function that rotates the carousel.
+    //
+    // Main loop function that rotates the carousel
+    //
     this.update = function() {
-      var change = (this.destRotation - this.rotation);
+      var change = this.destRotation - this.rotation;
       var absChange = Math.abs(change);
 
       this.rotation += change * options.speed;
-      if( absChange < 0.001 ) { this.rotation = this.destRotation; }
-      var numItems = items.length;
-      var spacing = (Math.PI / numItems) * 2;
+      if( absChange < 0.001 ) { this.rotation = this.destRotation }
+      var count = items.length;
+      var spacing = (Math.PI / count) * 2;
       var radians = this.rotation;
 
-      for( var i = 0; i < numItems; i++ ) {
-        this.rotateItem(i, radians);
+      for( var i = 0; i < count; i++ ) {
+        this.rotateItem( i, radians );
         radians += spacing;
       }
 
       if( absChange >= 0.001 ) {
         var context = this;
-        this.controlTimer = setTimeout(function() {context.update();}, this.timeDelay);
+        this.controlTimer = setTimeout( function() { context.update() }, this.timeDelay );
       } else {
         this.stop();
       }
@@ -257,9 +264,9 @@
       }
 
       for( i = 0; i < images.length; i++ )
-        items.push(new Item( images[i], options ));
+        items.push( new Item( images[i], options ) );
 
-      // If all images have valid widths and heights, we can stop checking.
+      // If all images have valid widths and heights, we can stop checking
       clearInterval(this.tt);
       this.bindControls();
       this.autoRotate();
@@ -269,11 +276,12 @@
         this.onLoaded( this );
     };
 
-    this.tt = setInterval( function(){ctx.checkImagesLoaded();}, 50 );
+    this.tt = setInterval( function() { ctx.checkImagesLoaded() }, 50 );
   };
 
-  // The jQuery plugin.
-  // Creates a carousel object for each item in the selector.
+  //
+  // The jQuery plugin
+  //
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
       options = $.extend( {}, {
