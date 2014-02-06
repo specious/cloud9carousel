@@ -30,7 +30,7 @@ h1 {
   margin-bottom: 34px;
 }
 #wrap {
-  /* define fixed width and center in viewport */
+  /* fixed width, centered in viewport */
   width: 980px;
   left: -490px;
   margin-left: 50%;
@@ -112,6 +112,9 @@ h1 {
   position: absolute;
   left: 4px;
   top: 478px;
+}
+.fb-like {
+  vertical-align: top;
 }
 .twitter-share-button {
   width: 84px !important;
