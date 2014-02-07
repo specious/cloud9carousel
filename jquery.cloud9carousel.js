@@ -75,8 +75,12 @@
   var Carousel = function( container, images, options ) {
     this.items = [];
     this.container = container;
+    this.xCentre = options.xPos;
+    this.yCentre = options.yPos;
     this.xRadius = (options.xRadius === 0) ? $(container).width()/2.3 : options.xRadius;
     this.yRadius = (options.yRadius === 0) ? $(container).height()/6  : options.yRadius;
+    this.rotation = this.destRotation = Math.PI/2; // put the first item in front
+    this.frameDelay = 1000/options.FPS;
     this.renderTimer = 0;
     this.autoRotateTimer = 0;
     this.onLoaded = options.onLoaded;
@@ -88,18 +92,111 @@
       }, options.mirrorOptions );
     }
 
-    this.xCentre = options.xPos;
-    this.yCentre = options.yPos;
-
-    // Start with the first item at the front
-    this.rotation = this.destRotation = Math.PI/2;
-    this.frameDelay = 1000/options.FPS;
-
     this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
 
     $(container).css( {position:'relative', overflow:'hidden'} );
     $(options.buttonLeft).css('display','inline');
     $(options.buttonRight).css('display','inline');
+
+    this.rotateItem = function( itemIndex, rotation ) {
+      var item = this.items[itemIndex];
+      var minScale = options.minScale; // scale of the farthest item
+      var smallRange = (1-minScale) * 0.5;
+      var sinVal = Math.sin(rotation);
+      var scale = ((sinVal+1) * smallRange) + minScale;
+
+      var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.fullWidth*0.5)) * scale);
+      var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
+
+      item.moveTo( x, y, scale );
+    }
+
+    this.rotate = function() {
+      var count = this.items.length;
+      var spacing = (Math.PI / count) * 2;
+      var radians = this.rotation;
+
+      for( var i = 0; i < count; i++ ) {
+        this.rotateItem( i, radians );
+        radians += spacing;
+      }
+    }
+
+    this.scheduleNextFrame = function() {
+      var ctx = this;
+      this.renderTimer = setTimeout( function() { ctx.render() }, this.frameDelay );
+    }
+
+    this.stop = function() {
+      clearTimeout(this.renderTimer);
+      this.renderTimer = 0;
+    };
+
+    this.render = function() {
+      var change = this.destRotation - this.rotation;
+
+      if( Math.abs(change) < 0.001 ) {
+        this.rotation = this.destRotation;
+        this.stop();
+      } else {
+        this.rotation += change * options.speed;
+        this.scheduleNextFrame();
+      }
+
+      this.rotate();
+
+      if( typeof this.onRendered === 'function' )
+        this.onRendered( this );
+    };
+
+    this.itemsRotated = function() {
+      return this.items.length * ((Math.PI/2) - this.rotation) / (2*Math.PI);
+    }
+
+    this.floatIndex = function() {
+      var floatIndex = this.itemsRotated() % this.items.length;
+      return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;
+    }
+
+    this.nearestIndex = function() {
+      return Math.round( this.floatIndex() ) % this.items.length;
+    }
+
+    this.nearestItem = function() {
+      return this.items[this.nearestIndex()];
+    }
+
+    //
+    // Spin the carousel.  Count is the number (+-) of carousel items to rotate
+    //
+    this.go = function( count ) {
+      this.destRotation += (2 * Math.PI / this.items.length) * count;
+
+      if( this.renderTimer === 0 )
+        this.scheduleNextFrame();
+    };
+
+    //
+    // Deactivate the carousel
+    //
+    this.halt = function() {
+      this.stop();
+
+      $(options.buttonLeft).unbind( 'click' );
+      $(options.buttonRight).unbind( 'click' );
+      $(container).unbind( '.cloud9' );
+    }
+
+    this.autoRotate = function() {
+      if( options.autoRotate !== false ) {
+        var ctx = this;
+        var dir = (options.autoRotate === 'right') ? 1 : -1;
+        this.autoRotateTimer = setInterval(
+          function() { ctx.go( dir ) },
+          options.autoRotateDelay
+        );
+      }
+    };
 
     this.bindControls = function() {
       $(options.buttonLeft).bind( 'click', this, function( event ) {
@@ -152,109 +249,10 @@
       container.onselectstart = function() { return false };
     }
 
-    //
-    // Start the rotation of the carousel.  Direction is the number (+-)
-    // of carousel items to rotate by.
-    //
-    this.go = function( dir ) {
-      this.destRotation += (2 * Math.PI / this.items.length) * dir;
-
-      if( this.renderTimer === 0 )
-        this.scheduleNextFrame();
-    };
-
-    this.stop = function() {
-      clearTimeout(this.renderTimer);
-      this.renderTimer = 0;
-    };
-
-    //
-    // Deactivate the carousel
-    //
-    this.halt = function() {
-      this.stop();
-
-      $(options.buttonLeft).unbind( 'click' );
-      $(options.buttonRight).unbind( 'click' );
-      $(container).unbind( '.cloud9' );
-    }
-
-    this.autoRotate = function() {
-      if( options.autoRotate !== false ) {
-        var ctx = this;
-        var dir = (options.autoRotate === 'right') ? 1 : -1;
-        this.autoRotateTimer = setInterval(
-          function() { ctx.go(dir) },
-          options.autoRotateDelay
-        );
-      }
-    };
-
-    this.rotateItem = function( itemIndex, rotation ) {
-      var item = this.items[itemIndex];
-      var minScale = options.minScale; // scale of the farthest item
-      var smallRange = (1-minScale) * 0.5;
-      var sinVal = Math.sin(rotation);
-      var scale = ((sinVal+1) * smallRange) + minScale;
-
-      var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.fullWidth*0.5)) * scale);
-      var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
-
-      item.moveTo(x, y, scale);
-    }
-
-    this.itemsRotated = function() {
-      return this.items.length * ((Math.PI/2) - this.rotation) / (2*Math.PI);
-    }
-
-    this.floatIndex = function() {
-      var floatIndex = this.itemsRotated() % this.items.length;
-      return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;
-    }
-
-    this.nearestIndex = function() {
-      return Math.round( this.floatIndex() ) % this.items.length;
-    }
-
-    this.nearestItem = function() {
-      return this.items[this.nearestIndex()];
-    }
-
-    this.rotate = function() {
-      var count = this.items.length;
-      var spacing = (Math.PI / count) * 2;
-      var radians = this.rotation;
-
-      for( var i = 0; i < count; i++ ) {
-        this.rotateItem( i, radians );
-        radians += spacing;
-      }
-    }
-
-    this.scheduleNextFrame = function() {
-      var ctx = this;
-      this.renderTimer = setTimeout( function() { ctx.render() }, this.frameDelay );
-    }
-
-    this.render = function() {
-      var change = this.destRotation - this.rotation;
-
-      if( Math.abs(change) < 0.001 ) {
-        this.rotation = this.destRotation;
-        this.stop();
-      } else {
-        this.rotation += change * options.speed;
-        this.scheduleNextFrame();
-      }
-
-      this.rotate();
-
-      if( typeof this.onRendered === 'function' )
-        this.onRendered( this );
-    };
-
-    // Check if images have loaded. We need valid widths and heights for the reflections.
-    this.checkImagesLoaded = function() {
+    this.finishInit = function() {
+      //
+      // Wait until all images have completely loaded
+      //
       for( var i = 0; i < images.length; i++ ) {
         var im = images[i];
         if( (im.width === undefined) || ((im.complete !== undefined) && (!im.complete)) ) {
@@ -276,7 +274,7 @@
     };
 
     var ctx = this;
-    this.tt = setInterval( function() { ctx.checkImagesLoaded() }, 50 );
+    this.tt = setInterval( function() { ctx.finishInit() }, 50 );
   };
 
   //
