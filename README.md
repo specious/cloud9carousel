@@ -1,6 +1,6 @@
 # Cloud 9 Carousel
 
-Cleaned up, refactored, and improved version of [CloudCarousel](http://www.professorcloud.com/mainsite/carousel.htm) by Professor Cloud.
+Cleaned up, refactored, and improved version of [CloudCarousel](http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html), a jQuery image carousel originally released by [Professor Cloud](#authors).
 
 ## Try the **demo**!
 

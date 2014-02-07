@@ -105,12 +105,12 @@
 
     this.bindControls = function() {
       $(options.buttonLeft).bind( 'click', this, function( event ) {
-        event.data.rotate( -1 );
+        event.data.go( -1 );
         return false;
       } );
 
       $(options.buttonRight).bind( 'click', this, function( event ) {
-        event.data.rotate( 1 );
+        event.data.go( 1 );
         return false;
       } );
 
@@ -119,7 +119,7 @@
       //
       if( options.mouseWheel ) {
         $(container).bind( 'mousewheel', this, function( event, delta ) {
-          event.data.rotate( delta );
+          event.data.go( delta );
           return false;
         } );
       }
@@ -133,7 +133,7 @@
           if( Math.abs(diff) > images.length / 2 )
             diff += (diff > 0) ? -images.length : images.length;
 
-          event.data.rotate( -diff );
+          event.data.go( -diff );
         });
       }
 
@@ -154,7 +154,13 @@
       container.onselectstart = function() { return false };
     }
 
-    this.go = function() {
+    //
+    // Start the rotation of the carousel.  Direction is the number (+-)
+    // of carousel items to rotate by.
+    //
+    this.go = function( dir ) {
+      this.destRotation += (2 * Math.PI / items.length) * dir;
+
       if( this.controlTimer === 0 ) {
         var context = this;
         this.controlTimer = setTimeout( function() { context.update() }, this.timeDelay );
@@ -177,19 +183,11 @@
       $(container).unbind( '.cloud9' );
     }
 
-    //
-    // Start the rotation of the carousel. Direction is the number (+-) of carousel items to rotate by.
-    //
-    this.rotate = function( direction ) {
-      this.destRotation += (2 * Math.PI / items.length) * direction;
-      this.go();
-    };
-
     this.autoRotate = function() {
       if( options.autoRotate !== false ) {
         var dir = (options.autoRotate === 'right') ? 1 : -1;
         this.autoRotateTimer = setInterval(
-          function() { ctx.rotate(dir) },
+          function() { ctx.go(dir) },
           options.autoRotateDelay
         );
       }
@@ -225,15 +223,7 @@
       return this.items[this.nearestIndex()];
     }
 
-    //
-    // Main loop function that rotates the carousel
-    //
-    this.update = function() {
-      var change = this.destRotation - this.rotation;
-      var absChange = Math.abs(change);
-
-      this.rotation += change * options.speed;
-      if( absChange < 0.001 ) { this.rotation = this.destRotation }
+    this.rotate = function() {
       var count = items.length;
       var spacing = (Math.PI / count) * 2;
       var radians = this.rotation;
@@ -242,13 +232,25 @@
         this.rotateItem( i, radians );
         radians += spacing;
       }
+    }
 
-      if( absChange >= 0.001 ) {
+    //
+    // Main loop function that updates the carousel
+    //
+    this.update = function() {
+      var change = this.destRotation - this.rotation;
+
+      if( Math.abs(change) < 0.001 ) {
+        this.rotation = this.destRotation;
+        this.stop();
+      } else {
+        this.rotation += change * options.speed;
+
         var context = this;
         this.controlTimer = setTimeout( function() { context.update() }, this.timeDelay );
-      } else {
-        this.stop();
       }
+
+      this.rotate();
 
       if( typeof this.onUpdated === 'function' )
         this.onUpdated( this );
