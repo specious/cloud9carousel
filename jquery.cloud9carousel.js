@@ -95,8 +95,6 @@
     this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
 
     $(container).css( {position:'relative', overflow:'hidden'} );
-    $(options.buttonLeft).css('display','inline');
-    $(options.buttonRight).css('display','inline');
 
     this.rotateItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
