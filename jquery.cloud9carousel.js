@@ -73,16 +73,14 @@
   };
 
   var Carousel = function( container, images, options ) {
-    var items = [];
-    var ctx = this;
-    this.items = items;
-    this.controlTimer = 0;
+    this.items = [];
     this.container = container;
     this.xRadius = (options.xRadius === 0) ? $(container).width()/2.3 : options.xRadius;
     this.yRadius = (options.yRadius === 0) ? $(container).height()/6  : options.yRadius;
+    this.renderTimer = 0;
     this.autoRotateTimer = 0;
     this.onLoaded = options.onLoaded;
-    this.onUpdated = options.onUpdated;
+    this.onRendered = options.onRendered;
 
     if( options.mirrorOptions ) {
       options.mirrorOptions = $.extend( {
@@ -93,9 +91,9 @@
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
 
-    // Start with the first item at the front.
+    // Start with the first item at the front
     this.rotation = this.destRotation = Math.PI/2;
-    this.timeDelay = 1000/options.FPS;
+    this.frameDelay = 1000/options.FPS;
 
     this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
 
@@ -159,17 +157,15 @@
     // of carousel items to rotate by.
     //
     this.go = function( dir ) {
-      this.destRotation += (2 * Math.PI / items.length) * dir;
+      this.destRotation += (2 * Math.PI / this.items.length) * dir;
 
-      if( this.controlTimer === 0 ) {
-        var context = this;
-        this.controlTimer = setTimeout( function() { context.update() }, this.timeDelay );
-      }
+      if( this.renderTimer === 0 )
+        this.scheduleNextFrame();
     };
 
     this.stop = function() {
-      clearTimeout(this.controlTimer);
-      this.controlTimer = 0;
+      clearTimeout(this.renderTimer);
+      this.renderTimer = 0;
     };
 
     //
@@ -185,6 +181,7 @@
 
     this.autoRotate = function() {
       if( options.autoRotate !== false ) {
+        var ctx = this;
         var dir = (options.autoRotate === 'right') ? 1 : -1;
         this.autoRotateTimer = setInterval(
           function() { ctx.go(dir) },
@@ -194,7 +191,7 @@
     };
 
     this.rotateItem = function( itemIndex, rotation ) {
-      var item = items[itemIndex];
+      var item = this.items[itemIndex];
       var minScale = options.minScale; // scale of the farthest item
       var smallRange = (1-minScale) * 0.5;
       var sinVal = Math.sin(rotation);
@@ -224,7 +221,7 @@
     }
 
     this.rotate = function() {
-      var count = items.length;
+      var count = this.items.length;
       var spacing = (Math.PI / count) * 2;
       var radians = this.rotation;
 
@@ -234,10 +231,12 @@
       }
     }
 
-    //
-    // Main loop function that updates the carousel
-    //
-    this.update = function() {
+    this.scheduleNextFrame = function() {
+      var ctx = this;
+      this.renderTimer = setTimeout( function() { ctx.render() }, this.frameDelay );
+    }
+
+    this.render = function() {
       var change = this.destRotation - this.rotation;
 
       if( Math.abs(change) < 0.001 ) {
@@ -245,15 +244,13 @@
         this.stop();
       } else {
         this.rotation += change * options.speed;
-
-        var context = this;
-        this.controlTimer = setTimeout( function() { context.update() }, this.timeDelay );
+        this.scheduleNextFrame();
       }
 
       this.rotate();
 
-      if( typeof this.onUpdated === 'function' )
-        this.onUpdated( this );
+      if( typeof this.onRendered === 'function' )
+        this.onRendered( this );
     };
 
     // Check if images have loaded. We need valid widths and heights for the reflections.
@@ -266,18 +263,19 @@
       }
 
       for( i = 0; i < images.length; i++ )
-        items.push( new Item( images[i], options ) );
+        this.items.push( new Item( images[i], options ) );
 
       // If all images have valid widths and heights, we can stop checking
       clearInterval(this.tt);
       this.bindControls();
       this.autoRotate();
-      this.update();
+      this.render();
 
       if( typeof this.onLoaded === 'function' )
         this.onLoaded( this );
     };
 
+    var ctx = this;
     this.tt = setInterval( function() { ctx.checkImagesLoaded() }, 50 );
   };
 
