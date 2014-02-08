@@ -218,17 +218,20 @@
 
       if( options.bringToFront ) {
         $(container).bind( 'click.cloud9', function( event ) {
-          var item = $(event.target).closest( '.' + options.itemClass )[0].item;
-          var idx = self.items.indexOf( item );
-          var count = self.items.length;
+          var hits = $(event.target).closest( '.' + options.itemClass );
 
-          var diff = (idx - self.floatIndex()) % count;
+          if( hits.length !== 0 ) {
+            var idx = self.items.indexOf( hits[0].item );
+            var count = self.items.length;
 
-          // Choose direction based on which way is shortest
-          if( Math.abs(diff) > count / 2 )
-            diff += (diff > 0) ? -count : count;
+            var diff = (idx - self.floatIndex()) % count;
 
-          self.go( -diff );
+            // Choose direction based on which way is shortest
+            if( Math.abs(diff) > count / 2 )
+              diff += (diff > 0) ? -count : count;
+
+            self.go( -diff );
+          }
         });
       }
 
