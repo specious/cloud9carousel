@@ -21,7 +21,7 @@
  *     http://plugins.jquery.com/mousewheel/
  */
 
-(function($) {
+;(function($) {
   var Item = function( image, options ) {
     this.image = image;
     this.image.item = this;
@@ -303,4 +303,4 @@
       $(this).data( 'cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options) );
     } );
   };
-})($);
+})( window.jQuery || window.Zepto );

@@ -18,7 +18,7 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 
 ## Documentation
 
-See the [example code](https://github.com/specious/cloud9carousel/blob/gh-pages/index.html), or see [original usage instructions](http://www.professorcloud.com/mainsite/carousel-integration.htm) on Professor Cloud's website.
+See the [example code](https://github.com/specious/cloud9carousel/tree/gh-pages)
 
 ## Authors
 
