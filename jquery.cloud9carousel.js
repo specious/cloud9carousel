@@ -12,7 +12,7 @@
  * Please retain this copyright header in all versions of the software
  *
  * Requires:
- *  - jQuery
+ *  - jQuery 1.3.0 or later
  *
  * Optional:
  *  - Reflection support via reflection.js plugin by Christophe Beyls
