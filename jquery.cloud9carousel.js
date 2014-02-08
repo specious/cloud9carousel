@@ -179,7 +179,7 @@
     //
     this.halt = function() {
       this.stop();
-
+      clearInterval( this.autoRotateTimer );
       $(options.buttonLeft).unbind( 'click' );
       $(options.buttonRight).unbind( 'click' );
       $(container).unbind( '.cloud9' );
