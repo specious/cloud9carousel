@@ -12,9 +12,9 @@
  * Please retain this copyright header in all versions of the software
  *
  * Requires:
- *  - jQuery 1.3.0 or later
+ *  - jQuery 1.3.0 or later -OR- Zepto 1.1.1 or later
  *
- * Optional:
+ * Optional (jQuery only):
  *  - Reflection support via reflection.js plugin by Christophe Beyls
  *     http://www.digitalia.be/software/reflectionjs-for-jquery
  *  - Mousewheel support via mousewheel plugin
@@ -303,4 +303,4 @@
       $(this).data( 'cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options) );
     } );
   };
-})(jQuery);
+})($);

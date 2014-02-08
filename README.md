@@ -12,9 +12,9 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 
 ## Dependencies
 
-- jQuery 1.3.0 or later
-- Optional mirror effect using the [reflection.js plugin](http://www.digitalia.be/software/reflectionjs-for-jquery) by Christophe Beyls
-- Optional mouse wheel support via the [mousewheel plugin](http://plugins.jquery.com/mousewheel/)
+- [jQuery](https://github.com/jquery/jquery) 1.3.0 or later **or** [Zepto](https://github.com/madrobby/zepto) 1.1.1 or later
+- Optional mirror effect using the [reflection.js plugin](http://www.digitalia.be/software/reflectionjs-for-jquery) by Christophe Beyls (jQuery only)
+- Optional mouse wheel support via the [mousewheel plugin](http://plugins.jquery.com/mousewheel/) (jQuery only)
 
 ## Documentation
 
