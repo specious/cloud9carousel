@@ -73,6 +73,7 @@
   };
 
   var Carousel = function( container, images, options ) {
+    var self = this;
     this.items = [];
     this.container = container;
     this.xCentre = options.xPos;
@@ -121,8 +122,7 @@
     }
 
     this.scheduleNextFrame = function() {
-      var ctx = this;
-      this.renderTimer = setTimeout( function() { ctx.render() }, this.frameDelay );
+      this.renderTimer = setTimeout( function() { self.render() }, this.frameDelay );
     }
 
     this.stop = function() {
@@ -187,23 +187,22 @@
 
     this.autoRotate = function() {
       if( options.autoRotate !== false ) {
-        var ctx = this;
         var dir = (options.autoRotate === 'right') ? 1 : -1;
         this.autoRotateTimer = setInterval(
-          function() { ctx.go( dir ) },
+          function() { self.go( dir ) },
           options.autoRotateDelay
         );
       }
     };
 
     this.bindControls = function() {
-      $(options.buttonLeft).bind( 'click', this, function( event ) {
-        event.data.go( -1 );
+      $(options.buttonLeft).bind( 'click', function() {
+        self.go( -1 );
         return false;
       } );
 
-      $(options.buttonRight).bind( 'click', this, function( event ) {
-        event.data.go( 1 );
+      $(options.buttonRight).bind( 'click', function() {
+        self.go( 1 );
         return false;
       } );
 
@@ -211,37 +210,40 @@
       // Optional mousewheel support (requires plugin: http://plugins.jquery.com/mousewheel)
       //
       if( options.mouseWheel ) {
-        $(container).bind( 'mousewheel', this, function( event, delta ) {
-          event.data.go( delta );
+        $(container).bind( 'mousewheel.cloud9', function( event, delta ) {
+          self.go( delta );
           return false;
         } );
       }
 
       if( options.bringToFront ) {
-        $(container).bind( 'click.cloud9', this, function( event ) {
+        $(container).bind( 'click.cloud9', function( event ) {
           var item = $(event.target).closest( '.' + options.itemClass )[0].item;
-          var idx = event.data.items.indexOf( item );
+          var idx = self.items.indexOf( item );
+          var count = self.items.length;
 
-          var diff = (idx - event.data.floatIndex()) % images.length;
-          if( Math.abs(diff) > images.length / 2 )
-            diff += (diff > 0) ? -images.length : images.length;
+          var diff = (idx - self.floatIndex()) % count;
 
-          event.data.go( -diff );
+          // Choose direction based on which way is shortest
+          if( Math.abs(diff) > count / 2 )
+            diff += (diff > 0) ? -count : count;
+
+          self.go( -diff );
         });
       }
 
       // Stop auto rotation on mouse over
-      $(container).bind( 'mouseover.cloud9', this, function( event ) {
-        clearInterval( event.data.autoRotateTimer );
+      $(container).bind( 'mouseover.cloud9', function() {
+        clearInterval( self.autoRotateTimer );
       } );
 
       // Resume auto rotation on mouse out
-      $(container).bind( 'mouseout.cloud9', this, function( event ) {
-        event.data.autoRotate();
+      $(container).bind( 'mouseout.cloud9', function() {
+        self.autoRotate();
       } );
 
       // Prevent items from being selected by click-dragging inside the container
-      $(container).bind( 'mousedown', this, function() { return false } );
+      $(container).bind( 'mousedown', function() { return false } );
 
       // Same in IE
       container.onselectstart = function() { return false };
@@ -271,8 +273,7 @@
         this.onLoaded( this );
     };
 
-    var ctx = this;
-    this.tt = setInterval( function() { ctx.finishInit() }, 50 );
+    this.tt = setInterval( function() { self.finishInit() }, 50 );
   };
 
   //
