@@ -73,11 +73,10 @@
     var self = this;
     this.items = [];
     this.options = options;
-    this.container = container;
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
-    this.xRadius = (options.xRadius === 0) ? $(container).width()/2.3 : options.xRadius;
-    this.yRadius = (options.yRadius === 0) ? $(container).height()/6  : options.yRadius;
+    this.xRadius = (options.xRadius === 0) ? container.width()/2.3 : options.xRadius;
+    this.yRadius = (options.yRadius === 0) ? container.height()/6  : options.yRadius;
     this.rotation = this.destRotation = Math.PI/2; // put the first item in front
     this.frameDelay = 1000/options.FPS;
     this.renderTimer = 0;
@@ -91,7 +90,7 @@
       }, options.mirrorOptions );
     }
 
-    $(container).css( {position: 'relative', overflow: 'hidden'} );
+    container.css( {position: 'relative', overflow: 'hidden'} );
 
     this.rotateItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
@@ -176,9 +175,9 @@
     this.deactivate = function() {
       this.pause();
       clearInterval( this.autoPlayTimer );
-      $(options.buttonLeft).unbind( 'click' );
-      $(options.buttonRight).unbind( 'click' );
-      $(container).unbind( '.cloud9' );
+      options.buttonLeft.unbind( 'click' );
+      options.buttonRight.unbind( 'click' );
+      container.unbind( '.cloud9' );
     }
 
     this.autoPlay = function() {
@@ -192,12 +191,12 @@
 
     this.enableAutoPlay = function() {
       // Stop auto-play on mouse over
-      $(container).bind( 'mouseover.cloud9', function() {
+      container.bind( 'mouseover.cloud9', function() {
         clearInterval( self.autoPlayTimer );
       } );
 
       // Resume auto-play when mouse leaves the container
-      $(container).bind( 'mouseout.cloud9', function() {
+      container.bind( 'mouseout.cloud9', function() {
         self.autoPlay();
       } );
 
@@ -205,12 +204,12 @@
     }
 
     this.bindControls = function() {
-      $(options.buttonLeft).bind( 'click', function() {
+      options.buttonLeft.bind( 'click', function() {
         self.go( -1 );
         return false;
       } );
 
-      $(options.buttonRight).bind( 'click', function() {
+      options.buttonRight.bind( 'click', function() {
         self.go( 1 );
         return false;
       } );
@@ -219,14 +218,14 @@
       // Optional mousewheel support (requires plugin: http://plugins.jquery.com/mousewheel)
       //
       if( options.mouseWheel ) {
-        $(container).bind( 'mousewheel.cloud9', function( event, delta ) {
+        container.bind( 'mousewheel.cloud9', function( event, delta ) {
           self.go( delta );
           return false;
         } );
       }
 
       if( options.bringToFront ) {
-        $(container).bind( 'click.cloud9', function( event ) {
+        container.bind( 'click.cloud9', function( event ) {
           var hits = $(event.target).closest( '.' + options.itemClass );
 
           if( hits.length !== 0 ) {
@@ -245,13 +244,13 @@
       }
 
       // Prevent items from being selected by click-dragging inside the container
-      $(container).bind( 'mousedown', function() { return false } );
+      container.bind( 'mousedown', function() { return false } );
 
       // Same in IE
       container.onselectstart = function() { return false };
     }
 
-    var images = $(container).find( '.' + options.itemClass );
+    var images = container.find( '.' + options.itemClass );
 
     this.finishInit = function() {
       //
@@ -302,7 +301,9 @@
         handle: 'carousel'
       }, options );
 
-      $(this).data( options.handle, new Carousel( this, options ) );
+      var self = $(this);
+
+      self.data( options.handle, new Carousel( self, options ) );
     } );
   }
 })( window.jQuery || window.Zepto );
