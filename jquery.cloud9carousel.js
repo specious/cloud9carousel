@@ -75,6 +75,7 @@
   var Carousel = function( container, images, options ) {
     var self = this;
     this.items = [];
+    this.options = options;
     this.container = container;
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
@@ -186,14 +187,27 @@
     }
 
     this.autoRotate = function() {
-      if( options.autoRotate !== false ) {
-        var dir = (options.autoRotate === 'right') ? 1 : -1;
-        this.autoRotateTimer = setInterval(
-          function() { self.go( dir ) },
-          options.autoRotateDelay
-        );
-      }
+      var dir = (this.options.autoRotate === 'right') ? 1 : -1;
+
+      this.autoRotateTimer = setInterval(
+        function() { self.go( dir ) },
+        this.options.autoRotateDelay
+      );
     };
+
+    this.enableAutoRotate = function() {
+      // Stop auto rotation on mouse over
+      $(container).bind( 'mouseover.cloud9', function() {
+        clearInterval( self.autoRotateTimer );
+      } );
+
+      // Resume auto rotation when mouse leaves the container
+      $(container).bind( 'mouseout.cloud9', function() {
+        self.autoRotate();
+      } );
+
+      this.autoRotate();
+    }
 
     this.bindControls = function() {
       $(options.buttonLeft).bind( 'click', function() {
@@ -235,16 +249,6 @@
         });
       }
 
-      // Stop auto rotation on mouse over
-      $(container).bind( 'mouseover.cloud9', function() {
-        clearInterval( self.autoRotateTimer );
-      } );
-
-      // Resume auto rotation on mouse out
-      $(container).bind( 'mouseout.cloud9', function() {
-        self.autoRotate();
-      } );
-
       // Prevent items from being selected by click-dragging inside the container
       $(container).bind( 'mousedown', function() { return false } );
 
@@ -267,9 +271,9 @@
         this.items.push( new Item( images[i], options ) );
 
       // If all images have valid widths and heights, we can stop checking
-      clearInterval(this.tt);
+      clearInterval( this.tt );
+      if( this.options.autoRotate ) this.enableAutoRotate();
       this.bindControls();
-      this.autoRotate();
       this.render();
 
       if( typeof this.onLoaded === 'function' )
@@ -294,8 +298,8 @@
         itemClass: 'cloud9-item',
         FPS: 30,
         speed: 0.2,
-        autoRotate: false,
-        autoRotateDelay: 1500,
+        autoRotate: false, // [ false | "right" | "left"]
+        autoRotateDelay: 4000,
         mouseWheel: false,
         bringToFront: false
       }, options );
