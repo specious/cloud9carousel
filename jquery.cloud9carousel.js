@@ -29,12 +29,11 @@
     this.fullHeight = image.height;
     this.alt = image.alt;
     this.title = image.title;
-    this.reflection = null;
 
     $(image).css( 'position', 'absolute' );
 
     //
-    // Generate item reflection and wrap image and reflection in a new div
+    // Generate reflection and wrap image and its reflection together in a div
     //
     if( mirrorOptions ) {
       this.reflection = $( $(this.image).reflect(mirrorOptions) ).next()[0];
@@ -54,7 +53,7 @@
       this.y = y;
       this.scale = scale;
 
-      var style = ((this.reflection === null) ? this.image : this.image.parentNode).style;
+      var style = (mirrorOptions ? this.image.parentNode : this.image).style;
       style.width = this.width + "px";
       style.left = x + "px";
       style.top = y + "px";
@@ -92,7 +91,7 @@
       }, options.mirrorOptions );
     }
 
-    $(container).css( {position:'relative', overflow:'hidden'} );
+    $(container).css( {position: 'relative', overflow: 'hidden'} );
 
     this.rotateItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
