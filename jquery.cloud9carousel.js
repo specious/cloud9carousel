@@ -54,19 +54,19 @@
       this.y = y;
       this.scale = scale;
 
-      var container = (this.reflection === null) ? this.image : this.image.parentNode;
-      container.style.width = this.width + "px";
-      container.style.height = this.height + "px";
-      container.style.left = x + "px";
-      container.style.top = y + "px";
-      container.style.zIndex = "" + (scale * 100)|0;
+      var style = ((this.reflection === null) ? this.image : this.image.parentNode).style;
+      style.width = this.width + "px";
+      style.left = x + "px";
+      style.top = y + "px";
+      style.zIndex = "" + (scale * 100)|0;
 
       if( mirrorOptions ) {
         var hGap = mirrorOptions.gap * scale;
 
-        container.style.height = this.height + (this.reflection.fullHeight * scale) + "px";
+        style.height = this.height + (this.reflection.fullHeight * scale) + "px";
         this.reflection.style.marginTop = hGap + "px";
-      }
+      } else
+        style.height = this.height + "px";
     }
   }
 
