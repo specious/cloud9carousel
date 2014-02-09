@@ -81,7 +81,7 @@
     this.rotation = this.destRotation = Math.PI/2; // put the first item in front
     this.frameDelay = 1000/options.FPS;
     this.renderTimer = 0;
-    this.autoRotateTimer = 0;
+    this.autoPlayTimer = 0;
     this.onLoaded = options.onLoaded;
     this.onRendered = options.onRendered;
 
@@ -175,33 +175,33 @@
 
     this.deactivate = function() {
       this.pause();
-      clearInterval( this.autoRotateTimer );
+      clearInterval( this.autoPlayTimer );
       $(options.buttonLeft).unbind( 'click' );
       $(options.buttonRight).unbind( 'click' );
       $(container).unbind( '.cloud9' );
     }
 
-    this.autoRotate = function() {
-      var dir = (this.options.autoRotate === 'right') ? 1 : -1;
+    this.autoPlay = function() {
+      var dir = (this.options.autoPlay === 'right') ? 1 : -1;
 
-      this.autoRotateTimer = setInterval(
+      this.autoPlayTimer = setInterval(
         function() { self.go( dir ) },
-        this.options.autoRotateDelay
+        this.options.autoPlayDelay
       );
     }
 
-    this.enableAutoRotate = function() {
-      // Stop auto rotation on mouse over
+    this.enableAutoPlay = function() {
+      // Stop auto-play on mouse over
       $(container).bind( 'mouseover.cloud9', function() {
-        clearInterval( self.autoRotateTimer );
+        clearInterval( self.autoPlayTimer );
       } );
 
-      // Resume auto rotation when mouse leaves the container
+      // Resume auto-play when mouse leaves the container
       $(container).bind( 'mouseout.cloud9', function() {
-        self.autoRotate();
+        self.autoPlay();
       } );
 
-      this.autoRotate();
+      this.autoPlay();
     }
 
     this.bindControls = function() {
@@ -269,7 +269,7 @@
 
       // If all images have valid widths and heights, we can stop checking
       clearInterval( this.tt );
-      if( this.options.autoRotate ) this.enableAutoRotate();
+      if( this.options.autoPlay ) this.enableAutoPlay();
       this.bindControls();
       this.render();
 
@@ -295,8 +295,8 @@
         itemClass: 'cloud9-item',
         FPS: 30,
         speed: 0.2,
-        autoRotate: false, // [ false | "right" | "left"]
-        autoRotateDelay: 4000,
+        autoPlay: false, // [ false | "right" | "left"]
+        autoPlayDelay: 4000,
         mouseWheel: false,
         bringToFront: false
       }, options );

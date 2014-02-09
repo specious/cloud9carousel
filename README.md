@@ -1,6 +1,6 @@
 # Cloud 9 Carousel
 
-Cleaned up, refactored, and improved version of [CloudCarousel](http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html), a jQuery image carousel originally released by [Professor Cloud](#authors).
+Cleaned up, refactored, and improved version of [CloudCarousel](http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html), a jQuery 3D image carousel originally released by [Professor Cloud](#authors).
 
 ## Try the **demo**!
 
@@ -9,6 +9,18 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 ## Live examples
 
 <a href="http://www.julemagne.com/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Julemagne.com")</a>
+
+## Features
+
+- Just one JavaScript file
+- Works with jQuery **or** Zepto
+- Fast
+- Easy to use
+- *(optional)* Reflections (via [reflection.js](http://www.digitalia.be/software/reflectionjs-for-jquery))
+- *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/))
+- *(optional)* Rotate clicked item to front
+- *(optional)* Auto-play
+- Create multiple instances
 
 ## Dependencies
 
