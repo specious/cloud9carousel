@@ -70,7 +70,7 @@
         this.reflection.style.marginTop = hGap + "px";
       }
     }
-  };
+  }
 
   var Carousel = function( container, images, options ) {
     var self = this;
@@ -126,17 +126,12 @@
       this.renderTimer = setTimeout( function() { self.render() }, this.frameDelay );
     }
 
-    this.stop = function() {
-      clearTimeout(this.renderTimer);
-      this.renderTimer = 0;
-    };
-
     this.render = function() {
       var change = this.destRotation - this.rotation;
 
       if( Math.abs(change) < 0.001 ) {
         this.rotation = this.destRotation;
-        this.stop();
+        this.pause();
       } else {
         this.rotation += change * options.speed;
         this.scheduleNextFrame();
@@ -146,7 +141,7 @@
 
       if( typeof this.onRendered === 'function' )
         this.onRendered( this );
-    };
+    }
 
     this.itemsRotated = function() {
       return this.items.length * ((Math.PI/2) - this.rotation) / (2*Math.PI);
@@ -165,21 +160,26 @@
       return this.items[this.nearestIndex()];
     }
 
+    this.play = function() {
+      if( this.renderTimer === 0 )
+        this.scheduleNextFrame();
+    }
+
+    this.pause = function() {
+      clearTimeout( this.renderTimer );
+      this.renderTimer = 0;
+    }
+
     //
     // Spin the carousel.  Count is the number (+-) of carousel items to rotate
     //
     this.go = function( count ) {
       this.destRotation += (2 * Math.PI / this.items.length) * count;
+      this.play();
+    }
 
-      if( this.renderTimer === 0 )
-        this.scheduleNextFrame();
-    };
-
-    //
-    // Deactivate the carousel
-    //
-    this.halt = function() {
-      this.stop();
+    this.deactivate = function() {
+      this.pause();
       clearInterval( this.autoRotateTimer );
       $(options.buttonLeft).unbind( 'click' );
       $(options.buttonRight).unbind( 'click' );
@@ -193,7 +193,7 @@
         function() { self.go( dir ) },
         this.options.autoRotateDelay
       );
-    };
+    }
 
     this.enableAutoRotate = function() {
       // Stop auto rotation on mouse over
@@ -237,13 +237,13 @@
           if( hits.length !== 0 ) {
             var idx = self.items.indexOf( hits[0].item );
             var count = self.items.length;
-
-            var diff = (idx - self.floatIndex()) % count;
+            var diff = idx - (self.floatIndex() % count);
 
             // Choose direction based on which way is shortest
             if( Math.abs(diff) > count / 2 )
               diff += (diff > 0) ? -count : count;
 
+            self.destRotation = self.rotation;
             self.go( -diff );
           }
         });
@@ -281,7 +281,7 @@
     };
 
     this.tt = setInterval( function() { self.finishInit() }, 50 );
-  };
+  }
 
   //
   // The jQuery plugin
@@ -306,5 +306,5 @@
 
       $(this).data( 'cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options) );
     } );
-  };
+  }
 })( window.jQuery || window.Zepto );
