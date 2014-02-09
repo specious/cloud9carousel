@@ -23,15 +23,15 @@
 
 ;(function($) {
   var Item = function( image, mirrorOptions ) {
+    image.item = this;
     this.image = image;
-    this.image.item = this;
     this.fullWidth = image.width;
     this.fullHeight = image.height;
     this.alt = image.alt;
     this.title = image.title;
     this.reflection = null;
 
-    $(this.image).css( 'position', 'absolute' );
+    $(image).css( 'position', 'absolute' );
 
     //
     // Generate item reflection and wrap image and reflection in a new div
@@ -91,8 +91,6 @@
         gap: 2
       }, options.mirrorOptions );
     }
-
-    this.innerWrapper = $(container).wrapInner('<div style="position:absolute;width:100%;height:100%;"/>').children()[0];
 
     $(container).css( {position:'relative', overflow:'hidden'} );
 
