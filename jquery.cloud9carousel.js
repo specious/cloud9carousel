@@ -284,7 +284,7 @@
   //
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
-      options = $.extend( {}, {
+      options = $.extend( {
         xPos: 0,
         yPos: 0,
         xRadius: 0,
