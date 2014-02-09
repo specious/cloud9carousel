@@ -292,16 +292,17 @@
         yRadius: 0,
         minScale: 0.5,
         mirrorOptions: false,
-        itemClass: 'cloud9-item',
         FPS: 30,
         speed: 0.2,
         autoPlay: false, // [ false | "right" | "left"]
         autoPlayDelay: 4000,
         mouseWheel: false,
-        bringToFront: false
+        bringToFront: false,
+        itemClass: 'cloud9-item',
+        handle: 'carousel'
       }, options );
 
-      $(this).data( 'cloud9carousel', new Carousel( this, options ) );
+      $(this).data( options.handle, new Carousel( this, options ) );
     } );
   }
 })( window.jQuery || window.Zepto );
