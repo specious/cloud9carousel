@@ -70,7 +70,7 @@
     }
   }
 
-  var Carousel = function( container, images, options ) {
+  var Carousel = function( container, options ) {
     var self = this;
     this.items = [];
     this.options = options;
@@ -254,6 +254,8 @@
       container.onselectstart = function() { return false };
     }
 
+    var images = $(container).find( '.' + options.itemClass );
+
     this.finishInit = function() {
       //
       // Wait until all images have completely loaded
@@ -302,7 +304,7 @@
         bringToFront: false
       }, options );
 
-      $(this).data( 'cloud9carousel', new Carousel(this, $('.'+options.itemClass, $(this)), options) );
+      $(this).data( 'cloud9carousel', new Carousel( this, options ) );
     } );
   }
 })( window.jQuery || window.Zepto );
