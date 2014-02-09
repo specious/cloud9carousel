@@ -22,7 +22,7 @@
  */
 
 ;(function($) {
-  var Item = function( image, options ) {
+  var Item = function( image, mirrorOptions ) {
     this.image = image;
     this.image.item = this;
     this.fullWidth = image.width;
@@ -30,17 +30,16 @@
     this.alt = image.alt;
     this.title = image.title;
     this.reflection = null;
-    this.options = options;
 
     $(this.image).css( 'position', 'absolute' );
 
     //
     // Generate item reflection and wrap image and reflection in a new div
     //
-    if( this.options.mirrorOptions ) {
-      this.reflection = $( $(this.image).reflect(options.mirrorOptions) ).next()[0];
+    if( mirrorOptions ) {
+      this.reflection = $( $(this.image).reflect(mirrorOptions) ).next()[0];
       this.reflection.fullHeight = $(this.reflection).height();
-      $(this.reflection).css('margin-top', options.mirrorOptions.gap + 'px');
+      $(this.reflection).css('margin-top', mirrorOptions.gap + 'px');
       $(this.reflection).css('width', '100%');
       $(this.image).css('width', '100%');
 
@@ -62,11 +61,10 @@
       container.style.top = y + "px";
       container.style.zIndex = "" + (scale * 100)|0;
 
-      if( this.options.mirrorOptions ) {
-        var hMirror = this.reflection.fullHeight * scale;
-        var hGap = options.mirrorOptions.gap * scale;
+      if( mirrorOptions ) {
+        var hGap = mirrorOptions.gap * scale;
 
-        container.style.height = this.height + hGap + hMirror + "px";
+        container.style.height = this.height + (this.reflection.fullHeight * scale) + "px";
         this.reflection.style.marginTop = hGap + "px";
       }
     }
@@ -262,13 +260,13 @@
       //
       for( var i = 0; i < images.length; i++ ) {
         var im = images[i];
-        if( (im.width === undefined) || ((im.complete !== undefined) && (!im.complete)) ) {
+        if( (im.width === undefined) || ((im.complete !== undefined) && !im.complete) ) {
           return;
         }
       }
 
       for( i = 0; i < images.length; i++ )
-        this.items.push( new Item( images[i], options ) );
+        this.items.push( new Item( images[i], options.mirrorOptions ) );
 
       // If all images have valid widths and heights, we can stop checking
       clearInterval( this.tt );
