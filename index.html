@@ -22,11 +22,11 @@
       <img class="cloud9-item" src="images/browsers/safari.png" alt="Safari">
     </div>
     <p id="item-title">&nbsp;</p>
-    <div id="nav-buttons" class="noselect">
-      <button id="nav-left">
+    <div class="nav" class="noselect">
+      <button class="left">
         ←
       </button>
-      <button id="nav-right">
+      <button class="right">
         →
       </button>
     </div>
@@ -56,13 +56,13 @@
     </div>
   </div>
   <script src="js/lib/jquery.js"></script>
-  <script src="js/lib/jquery.reflect.js"></script>
+  <script src="js/lib/jquery.reflection.js"></script>
   <script src="js/lib/jquery.cloud9carousel.js"></script>
   <script>
     $(function() {
       var showcase = $("#showcase")
 
-      showcase.Cloud9Carousel({
+      showcase.Cloud9Carousel( {
         xPos: showcase.width() * 0.5,
         yPos: 42,
         yRadius: 48,
@@ -71,23 +71,22 @@
           height: 0.2
         },
         speed: 0.13,
-        buttonLeft: $("#nav-left"),
-        buttonRight: $("#nav-right"),
+        buttonLeft: $(".nav > .left"),
+        buttonRight: $(".nav > .right"),
+        autoRotate: true,
+        autoRotateDelay: 4000,
         bringToFront: true,
-        onUpdated: showcaseUpdated,
+        onRendered: showcaseUpdated,
         onLoaded: function() {
-          showcase.css('visibility', 'visible')
-          showcase.css('display', 'none')
-          showcase.fadeIn(1500)
+          showcase.css( 'visibility', 'visible' )
+          showcase.css( 'display', 'none' )
+          showcase.fadeIn( 1500 )
         }
-      })
-
-      // Cloud9Carousel messes it up on init
-      $("#nav-buttons > button").css('display', 'inline-block')
+      } )
 
       function showcaseUpdated( showcase ) {
         var title = $('#item-title').html(
-          $(showcase.nearestItem()).attr('alt')
+          $(showcase.nearestItem()).attr( 'alt' )
         )
 
         var c = Math.cos((showcase.floatIndex() % 1) * 2 * Math.PI)
@@ -95,7 +94,7 @@
       }
 
       // Simulate physical button click effect
-      $('#nav-buttons > button').click( function(e) {
+      $('.nav > button').click( function( e ) {
         var b = $(e.target).addClass( 'down' )
         setTimeout( function() { b.removeClass( 'down' ) }, 80 )
       } )
@@ -103,21 +102,21 @@
       //
       // Keyboard arrow keys
       //
-      $(document).keydown(function(e) {
+      $(document).keydown( function( e ) {
         //
         // More codes: http://www.javascripter.net/faq/keycodes.htm
         //
         switch( e.keyCode ) {
           /* left arrow */
           case 37:
-            $('#nav-left').click()
+            $('.nav > .left').click()
             break
 
           /* right arrow */
           case 39:
-            $('#nav-right').click()
+            $('.nav > .right').click()
         }
-      })
+      } )
     })
   </script>
   <script src="js/social.js" async></script>

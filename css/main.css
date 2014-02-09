@@ -67,10 +67,10 @@ h1 {
   margin-top: 30px;
   margin-bottom: 22px;
 }
-#nav-buttons {
+.nav {
   text-align: center;
 }
-#nav-buttons > button {
+.nav > button {
   width: 64px;
   height: 36px;
   color: #666;
@@ -89,8 +89,8 @@ h1 {
   box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
-#nav-buttons > button:active,
-#nav-buttons > button.down {
+.nav > button:active,
+.nav > button.down {
   background: #dfdfdf;
   border: solid 2px rgba(0, 0, 0, 0.6);
   box-shadow: none;
