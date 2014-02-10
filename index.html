@@ -63,18 +63,15 @@
       var showcase = $("#showcase")
 
       showcase.Cloud9Carousel( {
-        xPos: showcase.width() * 0.5,
         yPos: 42,
         yRadius: 48,
         mirrorOptions: {
           gap: 12,
           height: 0.2
         },
-        speed: 0.13,
         buttonLeft: $(".nav > .left"),
         buttonRight: $(".nav > .right"),
-        autoRotate: true,
-        autoRotateDelay: 4000,
+        autoPlay: true,
         bringToFront: true,
         onRendered: showcaseUpdated,
         onLoaded: function() {
@@ -99,9 +96,6 @@
         setTimeout( function() { b.removeClass( 'down' ) }, 80 )
       } )
 
-      //
-      // Keyboard arrow keys
-      //
       $(document).keydown( function( e ) {
         //
         // More codes: http://www.javascripter.net/faq/keycodes.htm
