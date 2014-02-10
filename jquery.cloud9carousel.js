@@ -181,10 +181,8 @@
     }
 
     this.autoPlay = function() {
-      var dir = (this.options.autoPlay === 'right') ? 1 : -1;
-
       this.autoPlayTimer = setInterval(
-        function() { self.go( dir ) },
+        function() { self.go( self.options.autoPlay ) },
         this.options.autoPlayDelay
       );
     }
@@ -268,7 +266,7 @@
 
       // If all images have valid widths and heights, we can stop checking
       clearInterval( this.tt );
-      if( this.options.autoPlay ) this.enableAutoPlay();
+      if( this.options.autoPlay !== 0 ) this.enableAutoPlay();
       this.bindControls();
       this.render();
 
@@ -293,7 +291,7 @@
         mirrorOptions: false,
         FPS: 30,
         speed: 0.2,
-        autoPlay: false, // [ false | "right" | "left"]
+        autoPlay: 0, // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
         mouseWheel: false,
         bringToFront: false,
