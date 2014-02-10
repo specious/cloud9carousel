@@ -79,7 +79,7 @@
     this.yRadius = (options.yRadius === 0) ? container.height()/6  : options.yRadius;
     this.rotation = this.destRotation = Math.PI/2; // put the first item in front
     this.frameDelay = 1000/options.FPS;
-    this.renderTimer = 0;
+    this.frameTimer = 0;
     this.autoPlayTimer = 0;
     this.onLoaded = options.onLoaded;
     this.onRendered = options.onRendered;
@@ -105,7 +105,7 @@
       item.moveTo( x, y, scale );
     }
 
-    this.rotate = function() {
+    this.render = function() {
       var count = this.items.length;
       var spacing = (Math.PI / count) * 2;
       var radians = this.rotation;
@@ -114,13 +114,12 @@
         this.rotateItem( i, radians );
         radians += spacing;
       }
+
+      if( typeof this.onRendered === 'function' )
+        this.onRendered( this );
     }
 
-    this.scheduleNextFrame = function() {
-      this.renderTimer = setTimeout( function() { self.render() }, this.frameDelay );
-    }
-
-    this.render = function() {
+    this.playFrame = function() {
       var change = this.destRotation - this.rotation;
 
       if( Math.abs(change) < 0.001 ) {
@@ -131,10 +130,11 @@
         this.scheduleNextFrame();
       }
 
-      this.rotate();
+      this.render();
+    }
 
-      if( typeof this.onRendered === 'function' )
-        this.onRendered( this );
+    this.scheduleNextFrame = function() {
+      this.frameTimer = setTimeout( function() { self.playFrame() }, this.frameDelay );
     }
 
     this.itemsRotated = function() {
@@ -155,13 +155,13 @@
     }
 
     this.play = function() {
-      if( this.renderTimer === 0 )
+      if( this.frameTimer === 0 )
         this.scheduleNextFrame();
     }
 
     this.pause = function() {
-      clearTimeout( this.renderTimer );
-      this.renderTimer = 0;
+      clearTimeout( this.frameTimer );
+      this.frameTimer = 0;
     }
 
     //
