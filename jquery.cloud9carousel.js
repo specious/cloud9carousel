@@ -72,20 +72,22 @@
   var Carousel = function( container, options ) {
     var self = this;
     this.items = [];
-    this.options = options;
     this.xCentre = options.xPos;
     this.yCentre = options.yPos;
     this.xRadius = (options.xRadius === 0) ? container.width()/2.3 : options.xRadius;
     this.yRadius = (options.yRadius === 0) ? container.height()/6  : options.yRadius;
     this.rotation = this.destRotation = Math.PI/2; // put the first item in front
+    this.speed = options.speed;
     this.frameDelay = 1000/options.FPS;
     this.frameTimer = 0;
+    this.autoPlayAmount = options.autoPlay;
+    this.autoPlayDelay = options.autoPlayDelay;
     this.autoPlayTimer = 0;
     this.onLoaded = options.onLoaded;
     this.onRendered = options.onRendered;
 
     if( options.mirrorOptions ) {
-      options.mirrorOptions = $.extend( {
+      this.mirrorOptions = $.extend( {
         gap: 2
       }, options.mirrorOptions );
     }
@@ -126,7 +128,7 @@
         this.rotation = this.destRotation;
         this.pause();
       } else {
-        this.rotation += change * options.speed;
+        this.rotation += change * this.speed;
         this.scheduleNextFrame();
       }
 
@@ -182,8 +184,8 @@
 
     this.autoPlay = function() {
       this.autoPlayTimer = setInterval(
-        function() { self.go( self.options.autoPlay ) },
-        this.options.autoPlayDelay
+        function() { self.go( self.autoPlayAmount ) },
+        this.autoPlayDelay
       );
     }
 
@@ -259,12 +261,12 @@
 
       // Init items
       for( i = 0; i < images.length; i++ )
-        this.items.push( new Item( images[i], options.mirrorOptions ) );
+        this.items.push( new Item( images[i], this.mirrorOptions ) );
 
       // Disable click-dragging of items
       container.bind( 'mousedown onselectstart', function() { return false } );
 
-      if( this.options.autoPlay !== 0 ) this.enableAutoPlay();
+      if( this.autoPlayAmount !== 0 ) this.enableAutoPlay();
       this.bindControls();
       this.render();
 
