@@ -21,6 +21,7 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
 - Create multiple instances
+- Handy callback functions
 
 ## Dependencies
 

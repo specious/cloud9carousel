@@ -220,7 +220,7 @@
       //
       if( options.mouseWheel ) {
         container.bind( 'mousewheel.cloud9', function( event, delta ) {
-          self.go( delta );
+          self.go( (delta > 0) ? 1 : -1 );
           return false;
         } );
       }
