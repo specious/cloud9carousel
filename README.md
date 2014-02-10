@@ -30,6 +30,48 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 
 ## Documentation
 
+### Basic usage
+
+HTML:
+```
+<div id="carousel">
+  <img class="cloud9-item" src="images/1.png" alt="Item #1">
+  <img class="cloud9-item" src="images/2.png" alt="Item #2">
+  <img class="cloud9-item" src="images/3.png" alt="Item #3">
+  <img class="cloud9-item" src="images/4.png" alt="Item #4">
+  <img class="cloud9-item" src="images/5.png" alt="Item #5">
+  <img class="cloud9-item" src="images/6.png" alt="Item #6">
+</div>
+
+<div id="buttons">
+  <button class="left">
+    ←
+  </button>
+  <button class="right">
+    →
+  </button>
+</div>
+```
+
+CSS:
+```
+#carousel .cloud9-item, #buttons button {
+  cursor: pointer;
+}
+```
+
+JavaScript:
+```
+$("carousel").Cloud9Carousel( {
+  buttonLeft: $("#buttons > .left"),
+  buttonRight: $("#buttons > .right"),
+  autoPlay: true,
+  bringToFront: true
+} )
+```
+
+### Advanced usage
+
 See the [example code](https://github.com/specious/cloud9carousel/tree/gh-pages)
 
 ## Authors

@@ -72,10 +72,11 @@
   var Carousel = function( container, options ) {
     var self = this;
     this.items = [];
-    this.xCentre = options.xPos;
-    this.yCentre = options.yPos;
-    this.xRadius = (options.xRadius === 0) ? container.width()/2.3 : options.xRadius;
-    this.yRadius = (options.yRadius === 0) ? container.height()/6  : options.yRadius;
+    this.xCentre = (options.xPos === null) ? container.width() * 0.5  : options.xPos;
+    this.yCentre = (options.yPos === null) ? container.height() * 0.1 : options.yPos;
+    this.xRadius = (options.xRadius === null) ? container.width()/2.3 : options.xRadius;
+    this.yRadius = (options.yRadius === null) ? container.height()/6  : options.yRadius;
+    this.farScale = options.farScale;
     this.rotation = this.destRotation = Math.PI/2; // put the first item in front
     this.speed = options.speed;
     this.frameDelay = 1000/options.FPS;
@@ -96,10 +97,10 @@
 
     this.rotateItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
-      var minScale = options.minScale; // scale of the farthest item
-      var smallRange = (1-minScale) * 0.5;
+      var farScale = this.farScale;
+      var smallRange = (1-farScale) * 0.5;
       var sinVal = Math.sin(rotation);
-      var scale = ((sinVal+1) * smallRange) + minScale;
+      var scale = ((sinVal+1) * smallRange) + farScale;
 
       var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.fullWidth*0.5)) * scale);
       var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
@@ -240,7 +241,7 @@
             self.destRotation = self.rotation;
             self.go( -diff );
           }
-        });
+        } );
       }
     }
 
@@ -283,15 +284,15 @@
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
       options = $.extend( {
-        xPos: 0,
-        yPos: 0,
-        xRadius: 0,
-        yRadius: 0,
-        minScale: 0.5,
+        xPos: null,           // null: automatically calculated
+        yPos: null,
+        xRadius: null,
+        yRadius: null,
+        farScale: 0.5,        // scale of the farthest item
         mirrorOptions: false,
         FPS: 30,
-        speed: 0.2,
-        autoPlay: 0, // [ 0: off | number of items (integer recommended, positive is clockwise) ]
+        speed: 0.13,
+        autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
         mouseWheel: false,
         bringToFront: false,
@@ -300,7 +301,6 @@
       }, options );
 
       var self = $(this);
-
       self.data( options.handle, new Carousel( self, options ) );
     } );
   }
