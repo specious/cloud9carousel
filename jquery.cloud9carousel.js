@@ -240,12 +240,6 @@
           }
         });
       }
-
-      // Prevent items from being selected by click-dragging inside the container
-      container.bind( 'mousedown', function() { return false } );
-
-      // Same in IE
-      container.onselectstart = function() { return false };
     }
 
     var images = container.find( '.' + options.itemClass );
@@ -261,11 +255,15 @@
         }
       }
 
+      clearInterval( this.initTimer );
+
+      // Init items
       for( i = 0; i < images.length; i++ )
         this.items.push( new Item( images[i], options.mirrorOptions ) );
 
-      // If all images have valid widths and heights, we can stop checking
-      clearInterval( this.tt );
+      // Disable click-dragging of items
+      container.bind( 'mousedown onselectstart', function() { return false } );
+
       if( this.options.autoPlay !== 0 ) this.enableAutoPlay();
       this.bindControls();
       this.render();
@@ -274,7 +272,7 @@
         this.onLoaded( this );
     };
 
-    this.tt = setInterval( function() { self.finishInit() }, 50 );
+    this.initTimer = setInterval( function() { self.finishInit() }, 50 );
   }
 
   //
