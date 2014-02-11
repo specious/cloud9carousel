@@ -57,7 +57,7 @@
       style.width = this.width + "px";
       style.left = x + "px";
       style.top = y + "px";
-      style.zIndex = "" + (scale * 100)|0;
+      style.zIndex = "" + (scale * 100) | 0;
 
       if( mirrorOptions ) {
         var hGap = mirrorOptions.gap * scale;
@@ -79,7 +79,7 @@
     this.farScale = options.farScale;
     this.rotation = this.destRotation = Math.PI/2; // put the first item in front
     this.speed = options.speed;
-    this.frameDelay = 1000/options.FPS;
+    this.frameDelay = (1000/options.FPS) | 0;
     this.frameTimer = 0;
     this.autoPlayAmount = options.autoPlay;
     this.autoPlayDelay = options.autoPlayDelay;
@@ -95,6 +95,11 @@
 
     container.css( {position: 'relative', overflow: 'hidden'} );
 
+    // Rotation:
+    //  *      0 : right
+    //  *   Pi/2 : front
+    //  *   Pi   : left
+    //  * 3 Pi/2 : back
     this.rotateItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
       var sin = Math.sin(rotation);
@@ -110,7 +115,7 @@
 
     this.render = function() {
       var count = this.items.length;
-      var spacing = (Math.PI / count) * 2;
+      var spacing = 2 * Math.PI / count;
       var radians = this.rotation;
 
       for( var i = 0; i < count; i++ ) {
@@ -232,7 +237,7 @@
             var diff = idx - (self.floatIndex() % count);
 
             // Choose direction based on which way is shortest
-            if( Math.abs(diff) > count / 2 )
+            if( 2 * Math.abs(diff) > count )
               diff += (diff > 0) ? -count : count;
 
             self.destRotation = self.rotation;
@@ -250,9 +255,8 @@
       //
       for( var i = 0; i < images.length; i++ ) {
         var im = images[i];
-        if( (im.width === undefined) || ((im.complete !== undefined) && !im.complete) ) {
+        if( (im.width === undefined) || ((im.complete !== undefined) && !im.complete) )
           return;
-        }
       }
 
       clearInterval( this.initTimer );
