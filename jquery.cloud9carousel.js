@@ -97,15 +97,15 @@
 
     this.rotateItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
+      var sin = Math.sin(rotation);
       var farScale = this.farScale;
-      var smallRange = (1-farScale) * 0.5;
-      var sinVal = Math.sin(rotation);
-      var scale = ((sinVal+1) * smallRange) + farScale;
+      var scale = farScale + ((1-farScale) * (sin+1) * 0.5);
 
-      var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.fullWidth*0.5)) * scale);
-      var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
-
-      item.moveTo( x, y, scale );
+      item.moveTo(
+        this.xCentre + (scale * ((Math.cos(rotation) * this.xRadius) - (item.fullWidth * 0.5))),
+        this.yCentre + (scale * sin * this.yRadius),
+        scale
+      );
     }
 
     this.render = function() {
