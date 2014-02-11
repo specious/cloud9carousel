@@ -2,14 +2,6 @@
 
 Cleaned up, refactored, and improved version of [CloudCarousel](http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html), a jQuery 3D image carousel originally released by [Professor Cloud](#authors).
 
-## Try the **demo**!
-
-<a href="http://specious.github.io/cloud9carousel/">![http://specious.github.io/cloud9carousel/](http://specious.github.io/cloud9carousel/images/screenshots/demo-browsers.png "Cloud 9 Carousel live demo!")</a>
-
-## Live examples
-
-<a href="http://www.julemagne.com/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Julemagne.com")</a>
-
 ## Features
 
 - Just one JavaScript file
@@ -17,11 +9,21 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 - Fast
 - Easy to use
 - *(optional)* Reflections (via [reflection.js](http://www.digitalia.be/software/reflectionjs-for-jquery))
-- *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/))
+- *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) [see: [note](#known-issues)]
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
 - Create multiple instances
 - Handy callback functions
+
+## Live examples
+
+### Basic demo
+
+<a href="http://specious.github.io/cloud9carousel/">![Basic demo](http://specious.github.io/cloud9carousel/images/screenshots/demo-browsers.png "Cloud 9 Carousel live demo!")</a>
+
+### Fine art gallery (advanced manipulation)
+
+<a href="http://www.julemagne.com/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Julemagne.com")</a>
 
 ## Dependencies
 
@@ -79,6 +81,10 @@ See the [example code](https://github.com/specious/cloud9carousel/tree/gh-pages)
 
 - Upgrades by [Ildar Sagdejev](http://twitter.com/tknomad)
 - Forked from CloudCarousel v1.0.5 by [Professor Cloud](http://www.professorcloud.com/) (R. Cecco)
+
+## Known issues
+
+- Due to lack of standartisation, "mousewheel" scrolling is ridiculously sensitive and unmanageable when using some track pads (such as on the MacBook Pro).  Unfortunately, since there appears to be no way to know directly what type of device is triggering the mousewheel events, it is not trivial to somehow normalise or "tame" the input from the track pad without also affecting the "1 tick per click" behaviour of the standard mouse wheel.  **darsain** has described the same phenomenon in [this discussion](https://github.com/darsain/sly/issues/67) at the sly.js project.  Ideas are appreciated.
 
 ## License
 

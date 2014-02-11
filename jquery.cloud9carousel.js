@@ -215,9 +215,6 @@
         return false;
       } );
 
-      //
-      // Optional mousewheel support (requires plugin: http://plugins.jquery.com/mousewheel)
-      //
       if( options.mouseWheel ) {
         container.bind( 'mousewheel.cloud9', function( event, delta ) {
           self.go( (delta > 0) ? 1 : -1 );
