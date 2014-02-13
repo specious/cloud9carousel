@@ -136,7 +136,7 @@
     this.playFrame = function() {
       var change = self.destRotation - self.rotation;
       var now = time();
-      var factor = (now - self.lastTime) * 0.03;
+      var factor = (now - self.lastTime) * 0.001;
       self.lastTime = now;
 
       if( Math.abs(change) < 0.001 ) {
@@ -310,7 +310,7 @@
         farScale: 0.5,        // scale of the farthest item
         mirrorOptions: false,
         fps: 30,
-        speed: 0.13,
+        speed: 4,             // greater than 0, 1 = slow, 4 = normal
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
         mouseWheel: false,
