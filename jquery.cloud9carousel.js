@@ -78,8 +78,8 @@
   var Carousel = function( container, options ) {
     var self = this;
     this.items = [];
-    this.xCentre = (options.xPos === null) ? container.width() * 0.5  : options.xPos;
-    this.yCentre = (options.yPos === null) ? container.height() * 0.1 : options.yPos;
+    this.xOrigin = (options.xOrigin === null) ? container.width()  * 0.5 : options.xOrigin;
+    this.yOrigin = (options.yOrigin === null) ? container.height() * 0.1 : options.yOrigin;
     this.xRadius = (options.xRadius === null) ? container.width()/2.3 : options.xRadius;
     this.yRadius = (options.yRadius === null) ? container.height()/6  : options.yRadius;
     this.farScale = options.farScale;
@@ -113,8 +113,8 @@
       var scale = farScale + ((1-farScale) * (sin+1) * 0.5);
 
       item.moveTo(
-        this.xCentre + (scale * ((Math.cos(rotation) * this.xRadius) - (item.fullWidth * 0.5))),
-        this.yCentre + (scale * sin * this.yRadius),
+        this.xOrigin + (scale * ((Math.cos(rotation) * this.xRadius) - (item.fullWidth * 0.5))),
+        this.yOrigin + (scale * sin * this.yRadius),
         scale
       );
     }
@@ -134,16 +134,16 @@
     }
 
     this.playFrame = function() {
-      var change = self.destRotation - self.rotation;
+      var rem = self.destRotation - self.rotation;
       var now = time();
       var factor = (now - self.lastTime) * 0.001;
       self.lastTime = now;
 
-      if( Math.abs(change) < 0.001 ) {
+      if( Math.abs(rem) < 0.001 ) {
         self.rotation = self.destRotation;
         self.pause();
       } else {
-        self.rotation += change * self.speed * factor;
+        self.rotation += rem * self.speed * factor;
         self.scheduleNextFrame();
       }
 
@@ -303,13 +303,13 @@
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
       options = $.extend( {
-        xPos: null,           // null: automatically calculated
-        yPos: null,
+        xOrigin: null,           // null: automatically calculated
+        yOrigin: null,
         xRadius: null,
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
         mirrorOptions: false,
-        fps: 30,
+        fps: 30,              // 30 or greater recommended (set to 0 for dynamic frame rate)
         speed: 4,             // greater than 0, 1 = slow, 4 = normal
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
