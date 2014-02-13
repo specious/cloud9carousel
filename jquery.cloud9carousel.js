@@ -69,6 +69,12 @@
     }
   }
 
+  var time = (function() {
+    return !window.performance || !window.performance.now ?
+      function() { return +new Date() } :
+      function() { return performance.now() };
+  })();
+
   var Carousel = function( container, options ) {
     var self = this;
     this.items = [];
@@ -79,7 +85,7 @@
     this.farScale = options.farScale;
     this.rotation = this.destRotation = Math.PI/2; // put the first item in front
     this.speed = options.speed;
-    this.frameDelay = (1000/options.FPS) | 0;
+    this.fps = options.fps;
     this.frameTimer = 0;
     this.autoPlayAmount = options.autoPlay;
     this.autoPlayDelay = options.autoPlayDelay;
@@ -128,21 +134,30 @@
     }
 
     this.playFrame = function() {
-      var change = this.destRotation - this.rotation;
+      var change = self.destRotation - self.rotation;
+      var now = time();
+      var factor = (now - self.lastTime) * 0.03;
+      self.lastTime = now;
 
       if( Math.abs(change) < 0.001 ) {
-        this.rotation = this.destRotation;
-        this.pause();
+        self.rotation = self.destRotation;
+        self.pause();
       } else {
-        this.rotation += change * this.speed;
-        this.scheduleNextFrame();
+        self.rotation += change * self.speed * factor;
+        self.scheduleNextFrame();
       }
 
-      this.render();
+      self.render();
     }
 
     this.scheduleNextFrame = function() {
-      this.frameTimer = setTimeout( function() { self.playFrame() }, this.frameDelay );
+      this.lastTime = time();
+
+      if( this.fps ) {
+        this.frameTimer = setTimeout( function() { self.playFrame() }, 1000 / this.fps );
+      } else {
+        this.frameTimer = window.requestAnimationFrame( self.playFrame );
+      }
     }
 
     this.itemsRotated = function() {
@@ -150,8 +165,11 @@
     }
 
     this.floatIndex = function() {
-      var floatIndex = this.itemsRotated() % this.items.length;
-      return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;
+      var count = this.items.length;
+      var floatIndex = this.itemsRotated() % count;
+
+      // Make sure float-index is positive
+      return (floatIndex < 0) ? floatIndex + count : floatIndex;
     }
 
     this.nearestIndex = function() {
@@ -168,7 +186,7 @@
     }
 
     this.pause = function() {
-      clearTimeout( this.frameTimer );
+      this.fps ? clearTimeout( this.frameTimer ) : window.cancelAnimationFrame( this.frameTimer );
       this.frameTimer = 0;
     }
 
@@ -291,7 +309,7 @@
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
         mirrorOptions: false,
-        FPS: 30,
+        fps: 30,
         speed: 0.13,
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,

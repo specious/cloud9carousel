@@ -12,6 +12,7 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 - *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) [see: [note](#known-issues)]
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
+- *(experimental)* Animation at native frame rate via [requestAnimationFrame](http://ie.microsoft.com/testdrive/Graphics/RequestAnimationFrame/) (if `fps` set to `0`)
 - Create multiple instances
 - Handy callback functions
 
@@ -36,7 +37,7 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 ### Basic usage
 
 HTML:
-```
+```html
 <div id="carousel">
   <img class="cloud9-item" src="images/1.png" alt="Item #1">
   <img class="cloud9-item" src="images/2.png" alt="Item #2">
@@ -57,14 +58,14 @@ HTML:
 ```
 
 CSS:
-```
+```css
 #carousel .cloud9-item, #buttons button {
   cursor: pointer;
 }
 ```
 
 JavaScript:
-```
+```js
 $("carousel").Cloud9Carousel( {
   buttonLeft: $("#buttons > .left"),
   buttonRight: $("#buttons > .right"),
@@ -84,7 +85,7 @@ See the [example code](https://github.com/specious/cloud9carousel/tree/gh-pages)
 
 ## Known issues
 
-- Due to lack of standartisation, "mousewheel" scrolling is ridiculously sensitive and unmanageable when using some track pads (such as on the MacBook Pro).  Unfortunately, since there appears to be no way to know directly what type of device is triggering the mousewheel events, it is not trivial to somehow normalise or "tame" the input from the track pad without also affecting the "1 tick per click" behaviour of the standard mouse wheel.  **darsain** has described the same phenomenon in [this discussion](https://github.com/darsain/sly/issues/67) at the sly.js project.  Ideas are appreciated.
+- Due to lack of standartisation, "mousewheel" scrolling is ridiculously sensitive and unmanageable when using some track pads (such as on the MacBook Pro).  Unfortunately, since there appears to be no way to know directly what type of device is triggering the mousewheel events, it is not trivial to somehow normalise or "tame" the input from the track pad without also affecting the "1 tick per click" behaviour of the standard mouse wheel.  **darsain** has described the same phenomenon in [this discussion](https://github.com/darsain/sly/issues/67) at the sly.js project.  Ideas are [appreciated](https://github.com/specious/cloud9carousel/issues/1).
 
 ## License
 
