@@ -22,7 +22,7 @@
  */
 
 ;(function($) {
-  var Item = function( image, mirrorOptions ) {
+  var Item = function( image, mirror ) {
     image.item = this;
     this.image = image;
     this.fullWidth = image.width;
@@ -30,17 +30,20 @@
     this.alt = image.alt;
     this.title = image.title;
 
-    $(image).css( 'position', 'absolute' );
+    image.style.position = 'absolute';
+    image = $(image);
 
     //
     // Generate reflection and wrap image and its reflection together in a div
     //
-    if( mirrorOptions ) {
-      this.reflection = $( $(this.image).reflect(mirrorOptions) ).next()[0];
-      this.reflection.fullHeight = $(this.reflection).height();
-      $(this.reflection).css('margin-top', mirrorOptions.gap + 'px');
-      $(this.reflection).css('width', '100%');
-      $(this.image).css('width', '100%');
+    if( mirror ) {
+      this.reflection = image.reflect(mirror).next()[0];
+
+      var $reflection = $(this.reflection);
+      this.reflection.fullHeight = $reflection.height();
+      $reflection.css('margin-top', mirror.gap + 'px');
+      $reflection.css('width', '100%');
+      image.css('width', '100%');
 
       // Pass the item handle to the wrapper container
       this.image.parentNode.item = this.image.item;
@@ -53,14 +56,14 @@
       this.y = y;
       this.scale = scale;
 
-      var style = (mirrorOptions ? this.image.parentNode : this.image).style;
+      var style = (mirror ? this.image.parentNode : this.image).style;
       style.width = this.width + "px";
       style.left = x + "px";
       style.top = y + "px";
-      style.zIndex = "" + (scale * 100)|0;
+      style.zIndex = "" + (scale * 100) | 0;
 
-      if( mirrorOptions ) {
-        var hGap = mirrorOptions.gap * scale;
+      if( mirror ) {
+        var hGap = mirror.gap * scale;
 
         style.height = this.height + (this.reflection.fullHeight * scale) + "px";
         this.reflection.style.marginTop = hGap + "px";
@@ -69,48 +72,79 @@
     }
   }
 
-  var Carousel = function( container, options ) {
+  var time = (function() {
+    return !window.performance || !window.performance.now ?
+      function() { return +new Date() } :
+      function() { return performance.now() };
+  })();
+
+  var cancelFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
+  var requestFrame = window.requestAnimationFrame;
+
+  //
+  // requestAnimationFrame() polyfill
+  //
+  // Support legacy browsers:
+  //   http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+  //
+  (function() {
+    var vendors = ['webkit', 'moz', 'ms'];
+
+    for( var i = 0, count = vendors.length; i < count && !cancelFrame; i++ ) {
+      cancelFrame = window[vendors[i]+'CancelAnimationFrame'] || window[vendors[i]+'CancelRequestAnimationFrame'];
+      requestFrame = requestFrame && window[vendors[i]+'RequestAnimationFrame'];
+    }
+  }());
+
+  var Carousel = function( element, options ) {
     var self = this;
+    var $container = $(element);
     this.items = [];
-    this.xCentre = (options.xPos === null) ? container.width() * 0.5  : options.xPos;
-    this.yCentre = (options.yPos === null) ? container.height() * 0.1 : options.yPos;
-    this.xRadius = (options.xRadius === null) ? container.width()/2.3 : options.xRadius;
-    this.yRadius = (options.yRadius === null) ? container.height()/6  : options.yRadius;
+    this.xOrigin = (options.xOrigin === null) ? $container.width()  * 0.5 : options.xOrigin;
+    this.yOrigin = (options.yOrigin === null) ? $container.height() * 0.1 : options.yOrigin;
+    this.xRadius = (options.xRadius === null) ? $container.width()  / 2.3 : options.xRadius;
+    this.yRadius = (options.yRadius === null) ? $container.height() / 6   : options.yRadius;
     this.farScale = options.farScale;
-    this.rotation = this.destRotation = Math.PI/2; // put the first item in front
+    this.rotation = this.destRotation = Math.PI/2; // start with the first item in front
     this.speed = options.speed;
-    this.frameDelay = 1000/options.FPS;
-    this.frameTimer = 0;
+    this.smooth = options.smooth;
+    this.fps = options.fps;
+    this.timer = 0;
     this.autoPlayAmount = options.autoPlay;
     this.autoPlayDelay = options.autoPlayDelay;
     this.autoPlayTimer = 0;
     this.onLoaded = options.onLoaded;
     this.onRendered = options.onRendered;
 
-    if( options.mirrorOptions ) {
-      this.mirrorOptions = $.extend( {
+    if( options.mirror ) {
+      this.mirror = $.extend( {
         gap: 2
-      }, options.mirrorOptions );
+      }, options.mirror );
     }
 
-    container.css( {position: 'relative', overflow: 'hidden'} );
+    $container.css( {position: 'relative', overflow: 'hidden'} );
 
+    // Rotation:
+    //  *      0 : right
+    //  *   Pi/2 : front
+    //  *   Pi   : left
+    //  * 3 Pi/2 : back
     this.rotateItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
+      var sin = Math.sin(rotation);
       var farScale = this.farScale;
-      var smallRange = (1-farScale) * 0.5;
-      var sinVal = Math.sin(rotation);
-      var scale = ((sinVal+1) * smallRange) + farScale;
+      var scale = farScale + ((1-farScale) * (sin+1) * 0.5);
 
-      var x = this.xCentre + (( (Math.cos(rotation) * this.xRadius) - (item.fullWidth*0.5)) * scale);
-      var y = this.yCentre + (( (sinVal * this.yRadius) ) * scale);
-
-      item.moveTo( x, y, scale );
+      item.moveTo(
+        this.xOrigin + (scale * ((Math.cos(rotation) * this.xRadius) - (item.fullWidth * 0.5))),
+        this.yOrigin + (scale * sin * this.yRadius),
+        scale
+      );
     }
 
     this.render = function() {
       var count = this.items.length;
-      var spacing = (Math.PI / count) * 2;
+      var spacing = 2 * Math.PI / count;
       var radians = this.rotation;
 
       for( var i = 0; i < count; i++ ) {
@@ -123,21 +157,29 @@
     }
 
     this.playFrame = function() {
-      var change = this.destRotation - this.rotation;
+      var rem = self.destRotation - self.rotation;
+      var now = time();
+      var dt = (now - self.lastTime) * 0.002;
+      self.lastTime = now;
 
-      if( Math.abs(change) < 0.001 ) {
-        this.rotation = this.destRotation;
-        this.pause();
+      if( Math.abs(rem) < 0.003 ) {
+        self.rotation = self.destRotation;
+        self.pause();
       } else {
-        this.rotation += change * this.speed;
-        this.scheduleNextFrame();
+        // Rotate asymptotically closer to the destination
+        self.rotation = self.destRotation - rem / (1 + (self.speed * dt));
+        self.scheduleNextFrame();
       }
 
-      this.render();
+      self.render();
     }
 
     this.scheduleNextFrame = function() {
-      this.frameTimer = setTimeout( function() { self.playFrame() }, this.frameDelay );
+      this.lastTime = time();
+
+      this.timer = this.smooth && cancelFrame ?
+        requestFrame( self.playFrame ) :
+        setTimeout( self.playFrame, 1000 / this.fps );
     }
 
     this.itemsRotated = function() {
@@ -145,8 +187,11 @@
     }
 
     this.floatIndex = function() {
-      var floatIndex = this.itemsRotated() % this.items.length;
-      return ( floatIndex < 0 ) ? floatIndex + this.items.length : floatIndex;
+      var count = this.items.length;
+      var floatIndex = this.itemsRotated() % count;
+
+      // Make sure float-index is positive
+      return (floatIndex < 0) ? floatIndex + count : floatIndex;
     }
 
     this.nearestIndex = function() {
@@ -158,13 +203,13 @@
     }
 
     this.play = function() {
-      if( this.frameTimer === 0 )
+      if( this.timer === 0 )
         this.scheduleNextFrame();
     }
 
     this.pause = function() {
-      clearTimeout( this.frameTimer );
-      this.frameTimer = 0;
+      this.smooth && cancelFrame ? cancelFrame( this.timer ) : clearTimeout( this.timer );
+      this.timer = 0;
     }
 
     //
@@ -180,7 +225,7 @@
       clearInterval( this.autoPlayTimer );
       options.buttonLeft.unbind( 'click' );
       options.buttonRight.unbind( 'click' );
-      container.unbind( '.cloud9' );
+      $container.unbind( '.cloud9' );
     }
 
     this.autoPlay = function() {
@@ -192,12 +237,12 @@
 
     this.enableAutoPlay = function() {
       // Stop auto-play on mouse over
-      container.bind( 'mouseover.cloud9', function() {
+      $container.bind( 'mouseover.cloud9', function() {
         clearInterval( self.autoPlayTimer );
       } );
 
       // Resume auto-play when mouse leaves the container
-      container.bind( 'mouseout.cloud9', function() {
+      $container.bind( 'mouseout.cloud9', function() {
         self.autoPlay();
       } );
 
@@ -215,18 +260,15 @@
         return false;
       } );
 
-      //
-      // Optional mousewheel support (requires plugin: http://plugins.jquery.com/mousewheel)
-      //
       if( options.mouseWheel ) {
-        container.bind( 'mousewheel.cloud9', function( event, delta ) {
+        $container.bind( 'mousewheel.cloud9', function( event, delta ) {
           self.go( (delta > 0) ? 1 : -1 );
           return false;
         } );
       }
 
       if( options.bringToFront ) {
-        container.bind( 'click.cloud9', function( event ) {
+        $container.bind( 'click.cloud9', function( event ) {
           var hits = $(event.target).closest( '.' + options.itemClass );
 
           if( hits.length !== 0 ) {
@@ -235,7 +277,7 @@
             var diff = idx - (self.floatIndex() % count);
 
             // Choose direction based on which way is shortest
-            if( Math.abs(diff) > count / 2 )
+            if( 2 * Math.abs(diff) > count )
               diff += (diff > 0) ? -count : count;
 
             self.destRotation = self.rotation;
@@ -245,7 +287,7 @@
       }
     }
 
-    var images = container.find( '.' + options.itemClass );
+    var images = $container.find( '.' + options.itemClass );
 
     this.finishInit = function() {
       //
@@ -253,19 +295,18 @@
       //
       for( var i = 0; i < images.length; i++ ) {
         var im = images[i];
-        if( (im.width === undefined) || ((im.complete !== undefined) && !im.complete) ) {
+        if( (im.width === undefined) || ((im.complete !== undefined) && !im.complete) )
           return;
-        }
       }
 
       clearInterval( this.initTimer );
 
       // Init items
       for( i = 0; i < images.length; i++ )
-        this.items.push( new Item( images[i], this.mirrorOptions ) );
+        this.items.push( new Item( images[i], this.mirror ) );
 
       // Disable click-dragging of items
-      container.bind( 'mousedown onselectstart', function() { return false } );
+      $container.bind( 'mousedown onselectstart', function() { return false } );
 
       if( this.autoPlayAmount !== 0 ) this.enableAutoPlay();
       this.bindControls();
@@ -284,14 +325,15 @@
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
       options = $.extend( {
-        xPos: null,           // null: automatically calculated
-        yPos: null,
+        xOrigin: null,        // null: automatically calculated
+        yOrigin: null,
         xRadius: null,
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
-        mirrorOptions: false,
-        FPS: 30,
-        speed: 0.13,
+        mirror: false,
+        smooth: true,         // Smooth animation via requestAnimationFrame()
+        fps: 30,              // Fixed frames per second (if smooth animation is off)
+        speed: 4,             // positive number
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
         mouseWheel: false,
@@ -300,8 +342,7 @@
         handle: 'carousel'
       }, options );
 
-      var self = $(this);
-      self.data( options.handle, new Carousel( self, options ) );
+      $(this).data( options.handle, new Carousel( this, options ) );
     } );
   }
 })( window.jQuery || window.Zepto );
