@@ -154,14 +154,15 @@
     this.playFrame = function() {
       var rem = self.destRotation - self.rotation;
       var now = time();
-      var factor = (now - self.lastTime) * 0.001;
+      var dt = (now - self.lastTime) * 0.002;
       self.lastTime = now;
 
-      if( Math.abs(rem) < 0.001 ) {
+      if( Math.abs(rem) < 0.003 ) {
         self.rotation = self.destRotation;
         self.pause();
       } else {
-        self.rotation += rem * self.speed * factor;
+        // Rotate asymptotically closer to the destination
+        self.rotation = self.destRotation - rem / (1 + (self.speed * dt));
         self.scheduleNextFrame();
       }
 
@@ -332,7 +333,7 @@
         farScale: 0.5,        // scale of the farthest item
         mirrorOptions: false,
         fps: 30,              // 30 or greater recommended (set to 0 for dynamic frame rate)
-        speed: 4,             // greater than 0, 1 = slow, 4 = normal
+        speed: 4,             // positive number
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
         mouseWheel: false,
