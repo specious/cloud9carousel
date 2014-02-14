@@ -56,19 +56,15 @@
       this.y = y;
       this.scale = scale;
 
+      // The gap between the image and its reflection doesn't resize automatically
+      if( mirror )
+        this.reflection.style.marginTop = (mirror.gap * scale) + "px";
+
       var style = (mirror ? this.image.parentNode : this.image).style;
       style.width = this.width + "px";
       style.left = x + "px";
       style.top = y + "px";
       style.zIndex = "" + (scale * 100) | 0;
-
-      if( mirror ) {
-        var hGap = mirror.gap * scale;
-
-        style.height = this.height + (this.reflection.fullHeight * scale) + "px";
-        this.reflection.style.marginTop = hGap + "px";
-      } else
-        style.height = this.height + "px";
     }
   }
 
