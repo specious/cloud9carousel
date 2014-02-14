@@ -22,7 +22,7 @@
  */
 
 ;(function($) {
-  var Item = function( image, mirrorOptions ) {
+  var Item = function( image, mirror ) {
     image.item = this;
     this.image = image;
     this.fullWidth = image.width;
@@ -30,17 +30,20 @@
     this.alt = image.alt;
     this.title = image.title;
 
-    $(image).css( 'position', 'absolute' );
+    image.style.position = 'absolute';
+    image = $(image);
 
     //
     // Generate reflection and wrap image and its reflection together in a div
     //
-    if( mirrorOptions ) {
-      this.reflection = $( $(this.image).reflect(mirrorOptions) ).next()[0];
-      this.reflection.fullHeight = $(this.reflection).height();
-      $(this.reflection).css('margin-top', mirrorOptions.gap + 'px');
-      $(this.reflection).css('width', '100%');
-      $(this.image).css('width', '100%');
+    if( mirror ) {
+      this.reflection = image.reflect(mirror).next()[0];
+
+      var $reflection = $(this.reflection);
+      this.reflection.fullHeight = $reflection.height();
+      $reflection.css('margin-top', mirror.gap + 'px');
+      $reflection.css('width', '100%');
+      image.css('width', '100%');
 
       // Pass the item handle to the wrapper container
       this.image.parentNode.item = this.image.item;
@@ -53,14 +56,14 @@
       this.y = y;
       this.scale = scale;
 
-      var style = (mirrorOptions ? this.image.parentNode : this.image).style;
+      var style = (mirror ? this.image.parentNode : this.image).style;
       style.width = this.width + "px";
       style.left = x + "px";
       style.top = y + "px";
       style.zIndex = "" + (scale * 100) | 0;
 
-      if( mirrorOptions ) {
-        var hGap = mirrorOptions.gap * scale;
+      if( mirror ) {
+        var hGap = mirror.gap * scale;
 
         style.height = this.height + (this.reflection.fullHeight * scale) + "px";
         this.reflection.style.marginTop = hGap + "px";
@@ -93,13 +96,14 @@
     }
   }());
 
-  var Carousel = function( container, options ) {
+  var Carousel = function( element, options ) {
     var self = this;
+    var $container = $(element);
     this.items = [];
-    this.xOrigin = (options.xOrigin === null) ? container.width()  * 0.5 : options.xOrigin;
-    this.yOrigin = (options.yOrigin === null) ? container.height() * 0.1 : options.yOrigin;
-    this.xRadius = (options.xRadius === null) ? container.width()  / 2.3 : options.xRadius;
-    this.yRadius = (options.yRadius === null) ? container.height() / 6   : options.yRadius;
+    this.xOrigin = (options.xOrigin === null) ? $container.width()  * 0.5 : options.xOrigin;
+    this.yOrigin = (options.yOrigin === null) ? $container.height() * 0.1 : options.yOrigin;
+    this.xRadius = (options.xRadius === null) ? $container.width()  / 2.3 : options.xRadius;
+    this.yRadius = (options.yRadius === null) ? $container.height() / 6   : options.yRadius;
     this.farScale = options.farScale;
     this.rotation = this.destRotation = Math.PI/2; // start with the first item in front
     this.speed = options.speed;
@@ -112,13 +116,13 @@
     this.onLoaded = options.onLoaded;
     this.onRendered = options.onRendered;
 
-    if( options.mirrorOptions ) {
-      this.mirrorOptions = $.extend( {
+    if( options.mirror ) {
+      this.mirror = $.extend( {
         gap: 2
-      }, options.mirrorOptions );
+      }, options.mirror );
     }
 
-    container.css( {position: 'relative', overflow: 'hidden'} );
+    $container.css( {position: 'relative', overflow: 'hidden'} );
 
     // Rotation:
     //  *      0 : right
@@ -221,7 +225,7 @@
       clearInterval( this.autoPlayTimer );
       options.buttonLeft.unbind( 'click' );
       options.buttonRight.unbind( 'click' );
-      container.unbind( '.cloud9' );
+      $container.unbind( '.cloud9' );
     }
 
     this.autoPlay = function() {
@@ -233,12 +237,12 @@
 
     this.enableAutoPlay = function() {
       // Stop auto-play on mouse over
-      container.bind( 'mouseover.cloud9', function() {
+      $container.bind( 'mouseover.cloud9', function() {
         clearInterval( self.autoPlayTimer );
       } );
 
       // Resume auto-play when mouse leaves the container
-      container.bind( 'mouseout.cloud9', function() {
+      $container.bind( 'mouseout.cloud9', function() {
         self.autoPlay();
       } );
 
@@ -257,14 +261,14 @@
       } );
 
       if( options.mouseWheel ) {
-        container.bind( 'mousewheel.cloud9', function( event, delta ) {
+        $container.bind( 'mousewheel.cloud9', function( event, delta ) {
           self.go( (delta > 0) ? 1 : -1 );
           return false;
         } );
       }
 
       if( options.bringToFront ) {
-        container.bind( 'click.cloud9', function( event ) {
+        $container.bind( 'click.cloud9', function( event ) {
           var hits = $(event.target).closest( '.' + options.itemClass );
 
           if( hits.length !== 0 ) {
@@ -283,7 +287,7 @@
       }
     }
 
-    var images = container.find( '.' + options.itemClass );
+    var images = $container.find( '.' + options.itemClass );
 
     this.finishInit = function() {
       //
@@ -299,10 +303,10 @@
 
       // Init items
       for( i = 0; i < images.length; i++ )
-        this.items.push( new Item( images[i], this.mirrorOptions ) );
+        this.items.push( new Item( images[i], this.mirror ) );
 
       // Disable click-dragging of items
-      container.bind( 'mousedown onselectstart', function() { return false } );
+      $container.bind( 'mousedown onselectstart', function() { return false } );
 
       if( this.autoPlayAmount !== 0 ) this.enableAutoPlay();
       this.bindControls();
@@ -321,12 +325,12 @@
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
       options = $.extend( {
-        xOrigin: null,           // null: automatically calculated
+        xOrigin: null,        // null: automatically calculated
         yOrigin: null,
         xRadius: null,
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
-        mirrorOptions: false,
+        mirror: false,
         smooth: true,         // Smooth animation via requestAnimationFrame()
         fps: 30,              // Fixed frames per second (if smooth animation is off)
         speed: 4,             // positive number
@@ -338,8 +342,7 @@
         handle: 'carousel'
       }, options );
 
-      var self = $(this);
-      self.data( options.handle, new Carousel( self, options ) );
+      $(this).data( options.handle, new Carousel( this, options ) );
     } );
   }
 })( window.jQuery || window.Zepto );
