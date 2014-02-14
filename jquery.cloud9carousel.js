@@ -103,8 +103,9 @@
     this.farScale = options.farScale;
     this.rotation = this.destRotation = Math.PI/2; // start with the first item in front
     this.speed = options.speed;
+    this.smooth = options.smooth;
     this.fps = options.fps;
-    this.frameTimer = 0;
+    this.timer = 0;
     this.autoPlayAmount = options.autoPlay;
     this.autoPlayDelay = options.autoPlayDelay;
     this.autoPlayTimer = 0;
@@ -172,15 +173,9 @@
     this.scheduleNextFrame = function() {
       this.lastTime = time();
 
-      // Fallback in case requestAnimationFrame() is not supported
-      if( !cancelFrame )
-        this.fps = 30;
-
-      if( this.fps ) {
-        this.frameTimer = setTimeout( function() { self.playFrame() }, 1000 / this.fps );
-      } else {
-        this.frameTimer = requestFrame( self.playFrame );
-      }
+      this.timer = this.smooth && cancelFrame ?
+        requestFrame( self.playFrame ) :
+        setTimeout( self.playFrame, 1000 / this.fps );
     }
 
     this.itemsRotated = function() {
@@ -204,13 +199,13 @@
     }
 
     this.play = function() {
-      if( this.frameTimer === 0 )
+      if( this.timer === 0 )
         this.scheduleNextFrame();
     }
 
     this.pause = function() {
-      this.fps ? clearTimeout( this.frameTimer ) : cancelFrame( this.frameTimer );
-      this.frameTimer = 0;
+      this.smooth && cancelFrame ? cancelFrame( this.timer ) : clearTimeout( this.timer );
+      this.timer = 0;
     }
 
     //
@@ -332,7 +327,8 @@
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
         mirrorOptions: false,
-        fps: 30,              // 30 or greater recommended (set to 0 for dynamic frame rate)
+        smooth: true,         // Smooth animation via requestAnimationFrame()
+        fps: 30,              // Fixed frames per second (if smooth animation is off)
         speed: 4,             // positive number
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,

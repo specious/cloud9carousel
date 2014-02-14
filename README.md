@@ -12,9 +12,9 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 - *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) [see: [note](#known-issues)]
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
-- *(experimental)* Animation at native frame rate via [requestAnimationFrame](http://ie.microsoft.com/testdrive/Graphics/RequestAnimationFrame/) (if `fps` set to `0`)
+- Smooth animation via [requestAnimationFrame](http://ie.microsoft.com/testdrive/Graphics/RequestAnimationFrame/) with fixed-FPS fallback mode
 - Create multiple instances
-- Handy callback functions
+- Handy callback events
 
 ## Live examples
 
