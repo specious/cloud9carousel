@@ -75,15 +75,33 @@
       function() { return performance.now() };
   })();
 
+  var cancelFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
+  var requestFrame = window.requestAnimationFrame;
+
+  //
+  // requestAnimationFrame() polyfill
+  //
+  // Support legacy browsers:
+  //   http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+  //
+  (function() {
+    var vendors = ['webkit', 'moz', 'ms'];
+
+    for( var i = 0, count = vendors.length; i < count && !cancelFrame; i++ ) {
+      cancelFrame = window[vendors[i]+'CancelAnimationFrame'] || window[vendors[i]+'CancelRequestAnimationFrame'];
+      requestFrame = requestFrame && window[vendors[i]+'RequestAnimationFrame'];
+    }
+  }());
+
   var Carousel = function( container, options ) {
     var self = this;
     this.items = [];
     this.xOrigin = (options.xOrigin === null) ? container.width()  * 0.5 : options.xOrigin;
     this.yOrigin = (options.yOrigin === null) ? container.height() * 0.1 : options.yOrigin;
-    this.xRadius = (options.xRadius === null) ? container.width()/2.3 : options.xRadius;
-    this.yRadius = (options.yRadius === null) ? container.height()/6  : options.yRadius;
+    this.xRadius = (options.xRadius === null) ? container.width()  / 2.3 : options.xRadius;
+    this.yRadius = (options.yRadius === null) ? container.height() / 6   : options.yRadius;
     this.farScale = options.farScale;
-    this.rotation = this.destRotation = Math.PI/2; // put the first item in front
+    this.rotation = this.destRotation = Math.PI/2; // start with the first item in front
     this.speed = options.speed;
     this.fps = options.fps;
     this.frameTimer = 0;
@@ -153,10 +171,14 @@
     this.scheduleNextFrame = function() {
       this.lastTime = time();
 
+      // Fallback in case requestAnimationFrame() is not supported
+      if( !cancelFrame )
+        this.fps = 30;
+
       if( this.fps ) {
         this.frameTimer = setTimeout( function() { self.playFrame() }, 1000 / this.fps );
       } else {
-        this.frameTimer = window.requestAnimationFrame( self.playFrame );
+        this.frameTimer = requestFrame( self.playFrame );
       }
     }
 
@@ -186,7 +208,7 @@
     }
 
     this.pause = function() {
-      this.fps ? clearTimeout( this.frameTimer ) : window.cancelAnimationFrame( this.frameTimer );
+      this.fps ? clearTimeout( this.frameTimer ) : cancelFrame( this.frameTimer );
       this.frameTimer = 0;
     }
 
