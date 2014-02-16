@@ -22,7 +22,26 @@
  */
 
 ;(function($) {
-  var Item = function( image, mirror ) {
+  //
+  // Detect CSS transform support
+  //
+  var transform = (function() {
+    var vendors = ['webkit', 'moz', 'ms'];
+    var style   = document.createElement( "div" ).style;
+    var trans   = 'transform' in style ? 'transform' : undefined;
+
+    for( var i = 0, count = vendors.length; i < count; i++ ) {
+      var prop = vendors[i] + 'Transform';
+      if( prop in style ) {
+        trans = prop;
+        break;
+      }
+    }
+
+    return trans;
+  })();
+
+  var Item = function( image, options ) {
     image.item = this;
     this.image = image;
     this.fullWidth = image.width;
@@ -33,21 +52,24 @@
     image.style.position = 'absolute';
     image = $(image);
 
-    //
-    // Generate reflection and wrap image and its reflection together in a div
-    //
-    if( mirror ) {
-      this.reflection = image.reflect(mirror).next()[0];
+    if( options.mirror ) {
+      // Wrap image in a div together with its generated reflection
+      this.reflection = image.reflect( options.mirror ).next()[0];
 
       var $reflection = $(this.reflection);
       this.reflection.fullHeight = $reflection.height();
-      $reflection.css('margin-top', mirror.gap + 'px');
+      $reflection.css('margin-top', options.mirror.gap + 'px');
       $reflection.css('width', '100%');
       image.css('width', '100%');
 
-      // Pass the item handle to the wrapper container
-      this.image.parentNode.item = this.image.item;
-    }
+      // The item element now contains the image and reflection
+      this.element = this.image.parentNode;
+      this.element.item = this.image.item;
+    } else
+      this.element = this.image;
+
+    if( transform && options.transforms )
+      this.element.style[transform + "Origin"] = "0 0";
 
     this.moveTo = function( x, y, scale ) {
       this.width = this.fullWidth * scale;
@@ -56,19 +78,20 @@
       this.y = y;
       this.scale = scale;
 
-      var style = (mirror ? this.image.parentNode : this.image).style;
-      style.width = this.width + "px";
-      style.left = x + "px";
-      style.top = y + "px";
+      var style = this.element.style;
       style.zIndex = "" + (scale * 100) | 0;
 
-      if( mirror ) {
-        var hGap = mirror.gap * scale;
+      if( transform && options.transforms ) {
+        style[transform] = "translate(" + x + "px, " + y + "px) scale(" + scale + ")";
+      } else {
+        // The gap between the image and its reflection doesn't resize automatically
+        if( options.mirror )
+          this.reflection.style.marginTop = (options.mirror.gap * scale) + "px";
 
-        style.height = this.height + (this.reflection.fullHeight * scale) + "px";
-        this.reflection.style.marginTop = hGap + "px";
-      } else
-        style.height = this.height + "px";
+        style.width = this.width + "px";
+        style.left = x + "px";
+        style.top = y + "px";
+      }
     }
   }
 
@@ -78,15 +101,15 @@
       function() { return performance.now() };
   })();
 
-  var cancelFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
-  var requestFrame = window.requestAnimationFrame;
-
   //
-  // requestAnimationFrame() polyfill
+  // Detect requestAnimationFrame() support
   //
   // Support legacy browsers:
   //   http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
   //
+  var cancelFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
+  var requestFrame = window.requestAnimationFrame;
+
   (function() {
     var vendors = ['webkit', 'moz', 'ms'];
 
@@ -116,13 +139,15 @@
     this.onLoaded = options.onLoaded;
     this.onRendered = options.onRendered;
 
-    if( options.mirror ) {
-      this.mirror = $.extend( {
-        gap: 2
-      }, options.mirror );
+    this.itemOptions = {
+      transforms: options.transforms
     }
 
-    $container.css( {position: 'relative', overflow: 'hidden'} );
+    if( options.mirror ) {
+      this.itemOptions.mirror = $.extend( { gap: 2 }, options.mirror );
+    }
+
+    $container.css( { position: 'relative', overflow: 'hidden' } );
 
     // Rotation:
     //  *      0 : right
@@ -303,7 +328,7 @@
 
       // Init items
       for( i = 0; i < images.length; i++ )
-        this.items.push( new Item( images[i], this.mirror ) );
+        this.items.push( new Item( images[i], this.itemOptions ) );
 
       // Disable click-dragging of items
       $container.bind( 'mousedown onselectstart', function() { return false } );
@@ -331,8 +356,9 @@
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
         mirror: false,
-        smooth: true,         // Smooth animation via requestAnimationFrame()
-        fps: 30,              // Fixed frames per second (if smooth animation is off)
+        transforms: true,    // enable CSS transforms
+        smooth: true,         // enable smooth animation via requestAnimationFrame()
+        fps: 30,              // fixed frames per second (if smooth animation is off)
         speed: 4,             // positive number
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,

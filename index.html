@@ -22,7 +22,7 @@
       <img class="cloud9-item" src="images/browsers/safari.png" alt="Safari">
     </div>
     <p id="item-title">&nbsp;</p>
-    <div class="nav" class="noselect">
+    <div id="nav" class="noselect">
       <button class="left">
         ←
       </button>
@@ -31,7 +31,7 @@
       </button>
     </div>
     <div id="get">
-      <a id="download" href="http://github.com/specious/cloud9carousel">Download the source at GitHub</a>
+      <a id="download" href="http://github.com/specious/cloud9carousel">Download from GitHub</a>
       <p id="license">MIT License</p>
     </div>
     <div id="share">
@@ -69,8 +69,8 @@
           gap: 12,
           height: 0.2
         },
-        buttonLeft: $(".nav > .left"),
-        buttonRight: $(".nav > .right"),
+        buttonLeft: $("#nav > .left"),
+        buttonRight: $("#nav > .right"),
         autoPlay: true,
         bringToFront: true,
         onRendered: updated,
@@ -91,7 +91,7 @@
       }
 
       // Simulate physical button click effect
-      $('.nav > button').click( function( e ) {
+      $('#nav > button').click( function( e ) {
         var b = $(e.target).addClass( 'down' )
         setTimeout( function() { b.removeClass( 'down' ) }, 80 )
       } )
@@ -103,12 +103,12 @@
         switch( e.keyCode ) {
           /* left arrow */
           case 37:
-            $('.nav > .left').click()
+            $('#nav > .left').click()
             break
 
           /* right arrow */
           case 39:
-            $('.nav > .right').click()
+            $('#nav > .right').click()
         }
       } )
     })
