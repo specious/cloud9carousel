@@ -22,6 +22,25 @@
  */
 
 ;(function($) {
+  //
+  // Detect CSS transform support
+  //
+  var transform = (function() {
+    var vendors = ['webkit', 'moz', 'ms'];
+    var style   = document.createElement( "div" ).style;
+    var trans   = 'transform' in style ? 'transform' : undefined;
+
+    for( var i = 0, count = vendors.length; i < count; i++ ) {
+      var prop = vendors[i] + 'Transform';
+      if( prop in style ) {
+        trans = prop;
+        break;
+      }
+    }
+
+    return trans;
+  })();
+
   var Item = function( image, options ) {
     image.item = this;
     this.image = image;
@@ -49,6 +68,9 @@
     } else
       this.element = this.image;
 
+    if( transform && options.transforms )
+      this.element.style[transform + "Origin"] = "0 0";
+
     this.moveTo = function( x, y, scale ) {
       this.width = this.fullWidth * scale;
       this.height = this.fullHeight * scale;
@@ -59,9 +81,8 @@
       var style = this.element.style;
       style.zIndex = "" + (scale * 100) | 0;
 
-      if( options.transforms ) {
-        style.webkitTransformOrigin = "0 0";
-        style.webkitTransform = "translate(" + x + "px, " + y + "px) scale(" + scale + ")";
+      if( transform && options.transforms ) {
+        style[transform] = "translate(" + x + "px, " + y + "px) scale(" + scale + ")";
       } else {
         // The gap between the image and its reflection doesn't resize automatically
         if( options.mirror )
@@ -80,15 +101,15 @@
       function() { return performance.now() };
   })();
 
-  var cancelFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
-  var requestFrame = window.requestAnimationFrame;
-
   //
-  // requestAnimationFrame() polyfill
+  // Detect requestAnimationFrame() support
   //
   // Support legacy browsers:
   //   http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
   //
+  var cancelFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
+  var requestFrame = window.requestAnimationFrame;
+
   (function() {
     var vendors = ['webkit', 'moz', 'ms'];
 
@@ -335,8 +356,8 @@
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
         mirror: false,
-        transforms: false,    // enable WebKit CSS transforms (experimental)
-        smooth: true,         // smooth animation via requestAnimationFrame()
+        transforms: true,    // enable CSS transforms
+        smooth: true,         // enable smooth animation via requestAnimationFrame()
         fps: 30,              // fixed frames per second (if smooth animation is off)
         speed: 4,             // positive number
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]

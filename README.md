@@ -13,6 +13,7 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
 - Smooth animation via [requestAnimationFrame](http://ie.microsoft.com/testdrive/Graphics/RequestAnimationFrame/) with fixed-FPS fallback mode
+- CSS transforms (detects support automatically)
 - Create multiple instances
 - Handy callback events
 
