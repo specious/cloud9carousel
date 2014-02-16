@@ -12,7 +12,7 @@ html {
 body {
   height: 100%;
   color: #eee;
-  background: #020223;
+  background: black;
   margin: 0;
   overflow-x: hidden;
 }
@@ -25,17 +25,21 @@ a:hover {
   color: #D6F300;
 }
 h1 {
-  text-shadow: 2px 3px 3px #555;
-  text-align: center;
-  margin: 30px auto;
-  margin-bottom: 34px;
+  color: #BEC5D6;
+  font-family: sans-serif;
+  text-shadow: 2px 3px 3px #127E7A;
 }
 #wrap {
-  /* fixed width, centered in viewport */
-  width: 980px;
+  width: 980px; /* fixed width, centered in viewport */
   left: -490px;
   margin-left: 50%;
   position: relative;
+}
+#wrap > h1 {
+  font-size: 2.5em;
+  text-align: center;
+  margin: 26px auto;
+  padding-bottom: 3px;
 }
 #showcase {
   height: 460px;
@@ -52,11 +56,14 @@ h1 {
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
   border-radius: 8px;
-  margin-top: 12px;
   visibility: hidden;
 }
 #showcase img {
   cursor: pointer;
+}
+footer {
+  display: block;
+  position: relative;
 }
 #item-title {
   color: #F31414;
@@ -112,7 +119,7 @@ h1 {
 #share {
   position: absolute;
   left: 4px;
-  top: 478px;
+  top: -9px;
 }
 .fb-like {
   vertical-align: top;
@@ -123,18 +130,19 @@ h1 {
 }
 #credits {
   color: #c9c9c9;
-  padding: 10px;
-  border: 2px #999 dashed;
+  text-align: right;
+  padding-right: 25px;
   position: absolute;
+  top: -15px;
   right: 0;
-  bottom: 83px;
+}
+#credits h1 {
+  font-size: 1em;
+  margin: 2px auto;
 }
 #credits ul {
   font-size: 14px;
   list-style-type: none;
   padding-left: 2px;
   margin: 2px 0;
-}
-#credits .author {
-  color: white;
 }

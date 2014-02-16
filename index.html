@@ -5,14 +5,14 @@
     Programming by Ildar Sagdejev ( http://twitter.com/tknomad )
   -->
   <meta charset="UTF-8">
-  <title>Cloud 9 Carousel: JavaScript + HTML5 + CSS</title>
+  <title>Cloud 9 Carousel: JS / HTML5 / CSS</title>
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
   <!-- GitHub ribbon: http://codepo8.github.io/css-fork-on-github-ribbon/ -->
   <style>#forkongithub a{background:#dd0d0d;color:#fff;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:rgba(0,0,0,0.8);color:#ddd;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/specious/cloud9carousel">Fork me on GitHub</a></span>
-  <h1>Which browser is your favorite?</h1>
   <div id="wrap">
+    <h1>Which browser is your favorite?</h1>
     <div id="showcase" class="noselect">
       <img class="cloud9-item" src="images/browsers/firefox.png" alt="Firefox">
       <img class="cloud9-item" src="images/browsers/wyzo.png" alt="Wyzo">
@@ -21,39 +21,39 @@
       <img class="cloud9-item" src="images/browsers/iexplore.png" alt="Internet Explorer">
       <img class="cloud9-item" src="images/browsers/safari.png" alt="Safari">
     </div>
-    <p id="item-title">&nbsp;</p>
-    <div id="nav" class="noselect">
-      <button class="left">
-        ←
-      </button>
-      <button class="right">
-        →
-      </button>
-    </div>
-    <div id="get">
-      <a id="download" href="http://github.com/specious/cloud9carousel">Download from GitHub</a>
-      <p id="license">MIT License</p>
-    </div>
-    <div id="share">
-      <iframe src="http://ghbtns.com/github-btn.html?user=specious&repo=cloud9carousel&type=watch&count=true"
-  allowtransparency="true" frameborder="0" scrolling="0" width="86" height="20"></iframe>
-      <div class="fb-like" data-href="http://specious.github.io/cloud9carousel/" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
-      <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://specious.github.io/cloud9carousel/" data-count="horizontal"></a>
-      <div class="g-plusone" data-href="http://specious.github.io/cloud9carousel/" data-size="medium" data-annotation="bubble" data-expandto="bottom"></div>
-    </div>
-    <div id="credits">
-      <ul>
-        <li>
-          Original <a href="http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html">CloudCarousel</a> by <span class="author">Professor Cloud</span>
-        </li>
-        <li>
-          Improvements by <a href="http://twitter.com/tknomad">Ildar Sagdejev</a>
-        </li>
-        <li>
-          <a href="http://www.digitalia.be/software/reflectionjs-for-jquery">Reflection plugin</a> by <span class="author">Christophe Beyls</span>
-        </li>
-      </ul>
-    </div>
+    <footer>
+      <p id="item-title">&nbsp;</p>
+      <div id="nav" class="noselect">
+        <button class="left">
+          ←
+        </button>
+        <button class="right">
+          →
+        </button>
+      </div>
+      <div id="get">
+        <a id="download" href="http://github.com/specious/cloud9carousel">Download from GitHub</a>
+        <p id="license">MIT License</p>
+      </div>
+      <div id="share">
+        <iframe src="http://ghbtns.com/github-btn.html?user=specious&repo=cloud9carousel&type=watch&count=true"
+    allowtransparency="true" frameborder="0" scrolling="0" width="86" height="20"></iframe>
+        <div class="fb-like" data-href="http://specious.github.io/cloud9carousel/" data-layout="button_count" data-show-faces="true" data-font="arial"></div>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://specious.github.io/cloud9carousel/" data-count="horizontal"></a>
+        <div class="g-plusone" data-href="http://specious.github.io/cloud9carousel/" data-size="medium" data-annotation="bubble" data-expandto="bottom"></div>
+      </div>
+      <div id="credits">
+        <h1>Cloud 9 Carousel</h1>
+        <ul>
+          <li>
+            By <a href="http://twitter.com/tknomad">Ildar Sagdejev</a> and <a href="http://www.professorcloud.com/">R. Cecco</a>
+          </li>
+          <li>
+            <a href="http://www.digitalia.be/software/reflectionjs-for-jquery">Reflection plugin</a> by <a href="http://www.digitalia.be/">Christophe Beyls</a>
+          </li>
+        </ul>
+      </div>
+    </footer>
   </div>
   <script src="js/lib/jquery.js"></script>
   <script src="js/lib/jquery.reflection.js"></script>
