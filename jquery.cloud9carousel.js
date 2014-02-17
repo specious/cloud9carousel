@@ -349,20 +349,19 @@
   //
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
+      /* For full list of options see the README */
       options = $.extend( {
-        xOrigin: null,        // null: automatically calculated
+        xOrigin: null,        // null: calculated automatically
         yOrigin: null,
         xRadius: null,
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
-        mirror: false,
-        transforms: true,    // enable CSS transforms
+        transforms: true,     // enable CSS transforms
         smooth: true,         // enable smooth animation via requestAnimationFrame()
         fps: 30,              // fixed frames per second (if smooth animation is off)
         speed: 4,             // positive number
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
-        mouseWheel: false,
         bringToFront: false,
         itemClass: 'cloud9-item',
         handle: 'carousel'
