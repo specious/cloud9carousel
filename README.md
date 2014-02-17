@@ -218,6 +218,65 @@ mirror: {
   </tr>
 </table>
 
+### Carousel methods
+
+The following methods can be called on the carousel object after initialisation.  For example:
+
+```js
+// Spin by three items clockwise
+$("#carousel").data("carousel").go( 3 );
+```
+
+Basic methods:
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+    <th>Arguments</th>
+  </tr>
+  <tr>
+    <td>go( count )</td>
+    <td>Spin the carousel</td>
+    <td><b>count</b>: Number of carousel items to rotate (<b>+</b> is clockwise, <b>-</b> is counterclockwise)</td>
+  </tr>
+  <tr>
+    <td>nearestIndex()</td>
+    <td>Returns the 0-based index of the item nearest to the front <b>(integer)</b></td>
+    <td>none</td>
+  </tr>
+  <tr>
+    <td>nearestItem()</td>
+    <td>Returns a reference to the item object of the item that is nearest to the front <b>(Item object)</b></td>
+    <td>none</td>
+  </tr>
+  <tr>
+    <td>deactivate()</td>
+    <td>Disable the carousel (currently irreversible).  You can use that in order to halt the carousel mechanism and free the carousel's elements from it.  Then the elements can be manipulated without interference from the carousel plugin.  See for <a href="http://www.julemagne.com/">example</a>, when you click to expand the gallery.</td>
+    <td>none</td>
+  </tr>
+</table>
+
+Advanced methods:
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+    <th>Arguments</th>
+  </tr>
+  <tr>
+    <td>itemsRotated()</td>
+    <td>Returns the interpolated number of items rotated from the initial zero position.  In a carousel with 5 items that made three clockwise revolutions, the value will be <code>-15</code>.  If the carousel then further spins half-way to the next item, then the value would be <code>-15.5</code> <b>(float)</b> </td>
+    <td>none</td>
+  </tr>
+  <tr>
+    <td>floatIndex()</td>
+    <td>Returns an interpolated value of the item "index" at the front of the carousel.  If, for example, the carousel was 20% past item 2 toward the next item, then floatIndex() would return <code>2.2</code> <b>(float)</b></td>
+    <td>none</td>
+  </tr>
+</table>
+
 ### Event callbacks
 
 Callback functions may be passed to the carousel constructor along with the options.  For example:
