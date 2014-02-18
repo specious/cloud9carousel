@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <!--
-    Programming by Ildar Sagdejev ( http://twitter.com/tknomad )
+    Demo by Ildar Sagdejev ( http://twitter.com/tknomad )
   -->
   <meta charset="UTF-8">
-  <title>Cloud 9 Carousel: JS / HTML5 / CSS</title>
+  <title>Cloud 9 Carousel: JS / HTML5 / CSS3</title>
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -60,7 +60,7 @@
   <script src="js/lib/jquery.cloud9carousel.js"></script>
   <script>
     $(function() {
-      var showcase = $("#showcase")
+      var showcase = $("#showcase"), title = $('#item-title')
 
       showcase.Cloud9Carousel( {
         yOrigin: 42,
@@ -71,9 +71,9 @@
         },
         buttonLeft: $("#nav > .left"),
         buttonRight: $("#nav > .right"),
-        autoPlay: true,
+        autoPlay: 1,
         bringToFront: true,
-        onRendered: updated,
+        onRendered: rendered,
         onLoaded: function() {
           showcase.css( 'visibility', 'visible' )
           showcase.css( 'display', 'none' )
@@ -81,16 +81,17 @@
         }
       } )
 
-      function updated( showcase ) {
-        var title = $('#item-title').html(
-          $(showcase.nearestItem()).attr( 'alt' )
-        )
+      function rendered( carousel ) {
+        title.text( carousel.nearestItem().alt )
 
-        var c = Math.cos((showcase.floatIndex() % 1) * 2 * Math.PI)
+        // Fade in based on proximity of the item
+        var c = Math.cos((carousel.floatIndex() % 1) * 2 * Math.PI)
         title.css('opacity', 0.5 + (0.5 * c))
       }
 
+      //
       // Simulate physical button click effect
+      //
       $('#nav > button').click( function( e ) {
         var b = $(e.target).addClass( 'down' )
         setTimeout( function() { b.removeClass( 'down' ) }, 80 )
