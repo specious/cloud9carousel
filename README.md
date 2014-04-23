@@ -1,6 +1,6 @@
 # Cloud 9 Carousel
 
-Cleaned up, refactored, and improved version of [CloudCarousel](http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html), a jQuery 3D image carousel originally released by [Professor Cloud](#authors).
+A 3D perspective carousel using jQuery/Zepto focused on performance, based on the original [CloudCarousel](http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html) by [Professor Cloud](#authors).
 
 ## Features
 
@@ -16,6 +16,7 @@ Cleaned up, refactored, and improved version of [CloudCarousel](http://webscript
 - Harness the power of the GPU with CSS transforms (detects [support](http://caniuse.com/transforms) automatically)
 - Create multiple instances
 - Handy [callback events](#event-callbacks)
+- Works with any HTML element!
 
 ## Live examples
 
