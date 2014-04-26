@@ -1,5 +1,5 @@
 /*
- * Cloud 9 Carousel
+ * Cloud 9 Carousel 2.0
  *   Cleaned up, refactored, and improved version of CloudCarousel
  *
  * See the demo and get the latest version on GitHub:
@@ -44,8 +44,6 @@
   var Item = function( element, options ) {
     element.item = this;
     this.element = element;
-    this.alt = element.alt;
-    this.title = element.title;
 
     if( element.tagName === 'IMG' ) {
       this.fullWidth = element.width;
@@ -57,21 +55,22 @@
     }
 
     element.style.position = 'absolute';
-    element = $(element);
 
     if( options.mirror && this.element.tagName === 'IMG' ) {
       // Wrap image in a div together with its generated reflection
-      this.reflection = element.reflect( options.mirror ).next()[0];
+      this.reflection = $(element).reflect( options.mirror ).next()[0];
 
       var $reflection = $(this.reflection);
       this.reflection.fullHeight = $reflection.height();
-      $reflection.css('margin-top', options.mirror.gap + 'px');
-      $reflection.css('width', '100%');
-      element.css('width', '100%');
+      $reflection.css( 'margin-top', options.mirror.gap + 'px' );
+      $reflection.css( 'width', '100%' );
+      element.style.width = "100%";
 
       // The item element now contains the image and reflection
       this.element = this.element.parentNode;
-      this.element.item = this.element.item;
+      this.element.item  = this;
+      this.element.alt   = element.alt;
+      this.element.title = element.title;
     }
 
     if( transform && options.transforms )
