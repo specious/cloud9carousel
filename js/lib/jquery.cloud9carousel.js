@@ -1,5 +1,5 @@
 /*
- * Cloud 9 Carousel
+ * Cloud 9 Carousel 2.0
  *   Cleaned up, refactored, and improved version of CloudCarousel
  *
  * See the demo and get the latest version on GitHub:
@@ -41,32 +41,37 @@
     return trans;
   })();
 
-  var Item = function( image, options ) {
-    image.item = this;
-    this.image = image;
-    this.fullWidth = image.width;
-    this.fullHeight = image.height;
-    this.alt = image.alt;
-    this.title = image.title;
+  var Item = function( element, options ) {
+    element.item = this;
+    this.element = element;
 
-    image.style.position = 'absolute';
-    image = $(image);
+    if( element.tagName === 'IMG' ) {
+      this.fullWidth = element.width;
+      this.fullHeight = element.height;
+    } else {
+      element.style.display = "inline-block";
+      this.fullWidth = element.offsetWidth;
+      this.fullHeight = element.offsetHeight;
+    }
 
-    if( options.mirror ) {
+    element.style.position = 'absolute';
+
+    if( options.mirror && this.element.tagName === 'IMG' ) {
       // Wrap image in a div together with its generated reflection
-      this.reflection = image.reflect( options.mirror ).next()[0];
+      this.reflection = $(element).reflect( options.mirror ).next()[0];
 
       var $reflection = $(this.reflection);
       this.reflection.fullHeight = $reflection.height();
-      $reflection.css('margin-top', options.mirror.gap + 'px');
-      $reflection.css('width', '100%');
-      image.css('width', '100%');
+      $reflection.css( 'margin-top', options.mirror.gap + 'px' );
+      $reflection.css( 'width', '100%' );
+      element.style.width = "100%";
 
       // The item element now contains the image and reflection
-      this.element = this.image.parentNode;
-      this.element.item = this.image.item;
-    } else
-      this.element = this.image;
+      this.element = this.element.parentNode;
+      this.element.item  = this;
+      this.element.alt   = element.alt;
+      this.element.title = element.title;
+    }
 
     if( transform && options.transforms )
       this.element.style[transform + "Origin"] = "0 0";
@@ -85,7 +90,7 @@
         style[transform] = "translate(" + x + "px, " + y + "px) scale(" + scale + ")";
       } else {
         // The gap between the image and its reflection doesn't resize automatically
-        if( options.mirror )
+        if( options.mirror && this.element.tagName === 'IMG' )
           this.reflection.style.marginTop = (options.mirror.gap * scale) + "px";
 
         style.width = this.width + "px";
@@ -128,7 +133,7 @@
     this.xRadius = (options.xRadius === null) ? $container.width()  / 2.3 : options.xRadius;
     this.yRadius = (options.yRadius === null) ? $container.height() / 6   : options.yRadius;
     this.farScale = options.farScale;
-    this.rotation = this.destRotation = Math.PI/2; // start with the first item in front
+    this.rotation = this.destRotation = Math.PI/2; // start with the first item positioned in front
     this.speed = options.speed;
     this.smooth = options.smooth;
     this.fps = options.fps;
@@ -312,23 +317,24 @@
       }
     }
 
-    var images = $container.find( '.' + options.itemClass );
+    var items = $container.find( '.' + options.itemClass );
 
     this.finishInit = function() {
       //
       // Wait until all images have completely loaded
       //
-      for( var i = 0; i < images.length; i++ ) {
-        var im = images[i];
-        if( (im.width === undefined) || ((im.complete !== undefined) && !im.complete) )
+      for( var i = 0; i < items.length; i++ ) {
+        var item = items[i];
+        if( (item.tagName === 'IMG') &&
+            ((item.width === undefined) || ((item.complete !== undefined) && !item.complete)) )
           return;
       }
 
       clearInterval( this.initTimer );
 
       // Init items
-      for( i = 0; i < images.length; i++ )
-        this.items.push( new Item( images[i], this.itemOptions ) );
+      for( i = 0; i < items.length; i++ )
+        this.items.push( new Item( items[i], this.itemOptions ) );
 
       // Disable click-dragging of items
       $container.bind( 'mousedown onselectstart', function() { return false } );
@@ -349,20 +355,19 @@
   //
   $.fn.Cloud9Carousel = function( options ) {
     return this.each( function() {
+      /* For full list of options see the README */
       options = $.extend( {
-        xOrigin: null,        // null: automatically calculated
+        xOrigin: null,        // null: calculated automatically
         yOrigin: null,
         xRadius: null,
         yRadius: null,
         farScale: 0.5,        // scale of the farthest item
-        mirror: false,
-        transforms: true,    // enable CSS transforms
+        transforms: true,     // enable CSS transforms
         smooth: true,         // enable smooth animation via requestAnimationFrame()
         fps: 30,              // fixed frames per second (if smooth animation is off)
         speed: 4,             // positive number
         autoPlay: 0,          // [ 0: off | number of items (integer recommended, positive is clockwise) ]
         autoPlayDelay: 4000,
-        mouseWheel: false,
         bringToFront: false,
         itemClass: 'cloud9-item',
         handle: 'carousel'

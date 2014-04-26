@@ -38,24 +38,9 @@ h1 {
 #wrap > h1 {
   font-size: 2.5em;
   text-align: center;
-  margin: 26px auto;
   padding-bottom: 3px;
 }
 #showcase {
-  height: 460px;
-  background: #16235e;
-  background: -moz-linear-gradient(top, #16235e 0%, #020223 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#16235e), color-stop(100%,#020223)); /* Chrome, Safari4+ */
-  background: -webkit-linear-gradient(top, #16235e 0%, #020223 100%); /* Chrome10+, Safari5.1+ */
-  background: -o-linear-gradient(top, #16235e 0%, #020223 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #16235e 0%, #020223 100%); /* IE10+ */
-  background: linear-gradient(to bottom, #16235e 0%, #020223 100%); /* W3C */
-  -webkit-box-shadow: 0px 0px 13px 5px #DB1242;
-  -moz-box-shadow: 0px 0px 13px 5px #DB1242;
-  box-shadow: 0px 0px 13px 5px #DB1242;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  border-radius: 8px;
   visibility: hidden;
 }
 #showcase img {

@@ -2,30 +2,36 @@
 <html lang="en">
 <head>
   <!--
+    Species endangered by Homo sapiens
     Demo by Ildar Sagdejev ( http://twitter.com/tknomad )
   -->
   <meta charset="UTF-8">
   <title>Cloud 9 Carousel: JS / HTML5 / CSS3</title>
   <link rel="stylesheet" href="css/common.css">
   <style>
-    #wrap > h1 {
-      margin: 26px auto;
+    h1 {
+      margin: 14px auto 0;
     }
     #showcase {
-      height: 460px;
-      background: #16235e;
-      background: -moz-linear-gradient(top, #16235e 0%, #020223 100%); /* FF3.6+ */
-      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#16235e), color-stop(100%,#020223)); /* Chrome, Safari4+ */
-      background: -webkit-linear-gradient(top, #16235e 0%, #020223 100%); /* Chrome10+, Safari5.1+ */
-      background: -o-linear-gradient(top, #16235e 0%, #020223 100%); /* Opera 11.10+ */
-      background: -ms-linear-gradient(top, #16235e 0%, #020223 100%); /* IE10+ */
-      background: linear-gradient(to bottom, #16235e 0%, #020223 100%); /* W3C */
-      -webkit-box-shadow: 0px 0px 13px 5px #DB1242;
-      -moz-box-shadow: 0px 0px 13px 5px #DB1242;
-      box-shadow: 0px 0px 13px 5px #DB1242;
-      -webkit-border-radius: 8px;
-      -moz-border-radius: 8px;
-      border-radius: 8px;
+      height: 480px;
+      overflow: visible !important;
+    }
+    .card {
+      width: 260px;
+      padding: 12px;
+      text-align: center;
+      background-color: rgba(61, 9, 9, 0.8);
+      border: 2px white dotted;
+      border-radius: 12px;
+    }
+    .card h2 {
+      margin: 0 0 7px 0;
+    }
+    .card a {
+      display: block;
+    }
+    .card p {
+      font-size: 11px;
     }
   </style>
 </head>
@@ -33,14 +39,56 @@
   <!-- GitHub ribbon: http://codepo8.github.io/css-fork-on-github-ribbon/ -->
   <style>#forkongithub a{background:#dd0d0d;color:#fff;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:rgba(0,0,0,0.8);color:#ddd;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/specious/cloud9carousel">Fork me on GitHub</a></span>
   <div id="wrap">
-    <h1>Which browser is your favorite?</h1>
+    <h1>Endangered Species</h1>
     <div id="showcase" class="noselect">
-      <img class="cloud9-item" src="images/browsers/firefox.png" alt="Firefox">
-      <img class="cloud9-item" src="images/browsers/wyzo.png" alt="Wyzo">
-      <img class="cloud9-item" src="images/browsers/opera.png" alt="Opera">
-      <img class="cloud9-item" src="images/browsers/chrome.png" alt="Chrome">
-      <img class="cloud9-item" src="images/browsers/iexplore.png" alt="Internet Explorer">
-      <img class="cloud9-item" src="images/browsers/safari.png" alt="Safari">
+      <div class="card">
+        <h2>Bengal Tiger</h2>
+        <img src="images/species/tiger.jpg">
+        <p>
+         Over the past century tiger numbers have fallen dramatically, with a decreasing population trend. None of the Tiger Conservation Landscapes within the Bengal tiger range is large enough to support an effective population size of 250 individuals. Habitat losses and the extremely large-scale incidences of poaching are serious threats to the species' survival.
+        </p>
+        <a href="http://en.wikipedia.org/wiki/Bengal_tiger">Learn more...</a>
+      </div>
+      <div class="card">
+        <h2>Giant Panda</h2>
+        <img src="images/species/panda.jpg">
+        <p>
+          The giant panda is an endangered species, threatened by continued habitat loss and by a very low birthrate, both in the wild and in captivity. Its range is currently confined to a small portion on the western edge of its historical range, which stretched through southern and eastern China, northern Myanmar, and northern Vietnam.
+        </p>
+        <a href="http://en.wikipedia.org/wiki/Giant_panda">Learn more...</a>
+      </div>
+      <div class="card">
+        <h2>Asian Elephant</h2>
+        <img src="images/species/elephant.jpg">
+        <p>
+          The pre-eminent threats to Asian elephants today are loss, degradation and fragmentation of habitat, leading in turn to increasing conflicts between humans and elephants. They are poached for ivory and a variety of other products including meat and leather.
+        </p>
+        <a href="http://en.wikipedia.org/wiki/Asian_elephant">Learn more...</a>
+      </div>
+      <div class="card">
+        <h2>Bornean Orangutan</h2>
+        <img src="images/species/orangutan.jpg">
+        <p>
+          Orangutan are becoming increasingly endangered due to habitat destruction and the bushmeat trade, and young orangutans are captured to be sold as pets, usually entailing the killing of their mothers.
+        </p>
+        <a href="http://en.wikipedia.org/wiki/Bornean_orangutan">Learn more...</a>
+      </div>
+      <div class="card">
+        <h2>Common Chimpanzee</h2>
+        <img src="images/species/chimp.jpg">
+        <p>
+          The biggest threats to the common chimpanzee are habitat destruction, poaching and disease. Chimpanzee habitats have been limited by deforestation in both West and Central Africa. Road building has caused habitat degradation and fragmentation of chimpanzee populations and may allow poachers more access to areas that have not been seriously impacted by humans.
+        </p>
+        <a href="http://en.wikipedia.org/wiki/Common_chimpanzee">Learn more...</a>
+      </div>
+      <div class="card">
+        <h2>Rothschild's Giraffe</h2>
+        <img src="images/species/giraffe.jpg">
+        <p>
+          While giraffes in general are classified as Least Concern, Rothschild's giraffe is at particular risk of hybridisation, as the population is so limited in numbers. Very few locations are left where Rothschild's giraffe can be seen in the wild, with notable spots being Lake Nakuru National Park in Kenya and Murchison Falls National Park in northern Uganda.
+        </p>
+        <a href="http://en.wikipedia.org/wiki/Rothschild%27s_giraffe">Learn more...</a>
+      </div>
     </div>
     <footer>
       <p id="item-title">&nbsp;</p>
@@ -90,9 +138,9 @@
           gap: 12,
           height: 0.2
         },
+        itemClass: "card",
         buttonLeft: $("#nav > .left"),
         buttonRight: $("#nav > .right"),
-        autoPlay: 1,
         bringToFront: true,
         onRendered: rendered,
         onLoaded: function() {
@@ -103,7 +151,7 @@
       } )
 
       function rendered( carousel ) {
-        title.text( carousel.nearestItem().element.alt )
+        title.text( carousel.nearestItem().element.getElementsByTagName( "h2" )[0].innerHTML )
 
         // Fade in based on proximity of the item
         var c = Math.cos((carousel.floatIndex() % 1) * 2 * Math.PI)
