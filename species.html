@@ -9,11 +9,12 @@
   <title>Cloud 9 Carousel: JS / HTML5 / CSS3</title>
   <link rel="stylesheet" href="css/common.css">
   <style>
-    h1 {
+    #wrap > h1 {
+      color: rgb(221, 142, 22);
       margin: 14px auto 0;
     }
     #showcase {
-      height: 480px;
+      height: 570px;
       overflow: visible !important;
     }
     .card {
@@ -28,10 +29,17 @@
       margin: 0 0 7px 0;
     }
     .card a {
+      font-size: 18px;
       display: block;
     }
     .card p {
-      font-size: 11px;
+      font-size: 15px;
+    }
+    #share {
+      top: -84px;
+    }
+    #credits {
+      top: -78px;
     }
   </style>
 </head>
@@ -133,11 +141,7 @@
 
       showcase.Cloud9Carousel( {
         yOrigin: 42,
-        yRadius: 48,
-        mirror: {
-          gap: 12,
-          height: 0.2
-        },
+        yRadius: 40,
         itemClass: "card",
         buttonLeft: $("#nav > .left"),
         buttonRight: $("#nav > .right"),
