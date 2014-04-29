@@ -17,12 +17,8 @@ body {
   overflow-x: hidden;
 }
 a {
-  color: #DA2020;
   font-weight: bold;
   text-decoration: none;
-}
-a:hover {
-  color: #D6F300;
 }
 h1 {
   color: #BEC5D6;
@@ -117,7 +113,6 @@ footer {
   text-align: right;
   padding-right: 25px;
   position: absolute;
-  top: -15px;
   right: 0;
 }
 #credits h1 {
