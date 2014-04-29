@@ -128,7 +128,6 @@
       </div>
     </div>
     <footer>
-      <p id="item-title">&nbsp;</p>
       <div id="nav" class="noselect">
         <button class="left">
           ←
@@ -202,21 +201,12 @@
         buttonLeft: $("#nav > .left"),
         buttonRight: $("#nav > .right"),
         bringToFront: true,
-        onRendered: rendered,
         onLoaded: function() {
           showcase.css( 'visibility', 'visible' )
           showcase.css( 'display', 'none' )
           showcase.fadeIn( 1500 )
         }
       } )
-
-      function rendered( carousel ) {
-        title.text( carousel.nearestItem().element.getElementsByTagName( "h2" )[0].innerHTML )
-
-        // Fade in based on proximity of the item
-        var c = Math.cos((carousel.floatIndex() % 1) * 2 * Math.PI)
-        title.css('opacity', 0.5 + (0.5 * c))
-      }
 
       //
       // Simulate physical button click effect

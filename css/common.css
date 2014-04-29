@@ -46,15 +46,6 @@ footer {
   display: block;
   position: relative;
 }
-#item-title {
-  color: #F31414;
-  font-size: 29px;
-  letter-spacing: 0.13em;
-  text-shadow: 1px 1px 6px #C72B2B;
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 22px;
-}
 #nav {
   text-align: center;
 }
