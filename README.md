@@ -18,15 +18,11 @@ A 3D perspective carousel using jQuery/Zepto focused on performance, based on th
 - Handy [callback events](#event-callbacks)
 - Works with any HTML element!
 
-## Live examples
+## Demos
 
-### Basic demo
-
-<a href="http://specious.github.io/cloud9carousel/">![Basic demo](http://specious.github.io/cloud9carousel/images/screenshots/demo-browsers.png "Cloud 9 Carousel live demo!")</a>
-
-### Fine art gallery (advanced manipulation)
-
-<a href="http://www.julemagne.com/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Julemagne.com")</a>
+<a href="http://specious.github.io/cloud9carousel/species.html">![Endangered species](http://specious.github.io/cloud9carousel/images/screenshots/demo-species.png "Demo: Endangered species")</a>
+<a href="http://specious.github.io/cloud9carousel/">![Web browsers](http://specious.github.io/cloud9carousel/images/screenshots/demo-browsers.png "Demo: Web browsers")</a>
+<a href="http://www.julemagne.com/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Julemagne.com - Fine art")</a>
 
 ## Dependencies
 
