@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/common.css">
   <style>
     body {
-      background: url(images/species/bg.jpg) no-repeat center top fixed; 
+      background: url(images/species/bg.jpg) no-repeat center top fixed;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;
@@ -22,7 +22,7 @@
     a:hover {
       color: #88a7f7;
     }
-    #wrap > h1 {
+    .wrap > h1 {
       color: rgb(221, 142, 22);
       margin: 14px auto 0;
     }
@@ -47,6 +47,39 @@
     }
     .card p {
       font-size: 15px;
+    }
+    .nav {
+      width: 64px;
+      height: 134px;
+      color: #ccc;
+      font: bold 3em "Lucida Grande";
+      text-align: center;
+      text-shadow: 0px 1px 0px #f5f5f5;
+      background: rgba(150, 150, 150, 0.5);
+      border: solid 2px rgba(0, 0, 0, 0.4);
+      -webkit-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.45);
+      -moz-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      position: absolute;
+      top: 33%;
+    }
+    .nav:active,
+    .nav.down {
+      background: rgba(120, 120, 120, 0.5);
+      border: solid 2px rgba(0, 0, 0, 0.55);
+    }
+    .nav.left {
+      left: -43px;
+      -webkit-border-radius: 12px 5px 5px 12px;
+      -moz-border-radius: 12px 5px 5px 12px;
+      border-radius: 12px 5px 5px 12px;
+    }
+    .nav.right {
+      right: -43px;
+      -webkit-border-radius: 5px 12px 12px 5px;
+      -moz-border-radius: 5px 12px 12px 5px;
+      border-radius: 5px 12px 12px 5px;
     }
     footer hr {
       width: 6px;
@@ -75,8 +108,10 @@
 <body>
   <!-- GitHub ribbon: http://codepo8.github.io/css-fork-on-github-ribbon/ -->
   <style>#forkongithub a{background:#dd0d0d;color:#fff;text-decoration:none;font-family:arial,sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:rgba(0,0,0,0.8);color:#ddd;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;z-index:9999;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/specious/cloud9carousel">Fork me on GitHub</a></span>
-  <div id="wrap">
+  <div class="wrap">
     <h1>Endangered Species</h1>
+  </div>
+  <div class="wrap">
     <div id="showcase" class="noselect">
       <div class="card">
         <h2>Bengal Tiger</h2>
@@ -127,15 +162,15 @@
         <a href="http://en.wikipedia.org/wiki/Rothschild%27s_giraffe">Learn more...</a>
       </div>
     </div>
+    <button class="nav noselect left">
+      &lt;
+    </button>
+    <button class="nav noselect right">
+      &gt;
+    </button>
+  </div>
+  <div class="wrap">
     <footer>
-      <div id="nav" class="noselect">
-        <button class="left">
-          ←
-        </button>
-        <button class="right">
-          →
-        </button>
-      </div>
       <div id="get">
         <a id="download" href="http://github.com/specious/cloud9carousel">Download from GitHub</a>
         <p id="license">MIT License</p>
@@ -197,8 +232,8 @@
         yOrigin: 42,
         yRadius: 40,
         itemClass: "card",
-        buttonLeft: $("#nav > .left"),
-        buttonRight: $("#nav > .right"),
+        buttonLeft: $(".nav.left"),
+        buttonRight: $(".nav.right"),
         bringToFront: true,
         onLoaded: function() {
           showcase.css( 'visibility', 'visible' )
@@ -210,7 +245,7 @@
       //
       // Simulate physical button click effect
       //
-      $('#nav > button').click( function( e ) {
+      $('.nav').click( function( e ) {
         var b = $(e.target).addClass( 'down' )
         setTimeout( function() { b.removeClass( 'down' ) }, 80 )
       } )
@@ -222,12 +257,12 @@
         switch( e.keyCode ) {
           /* left arrow */
           case 37:
-            $('#nav > .left').click()
+            $('.nav.left').click()
             break
 
           /* right arrow */
           case 39:
-            $('#nav > .right').click()
+            $('.nav.right').click()
         }
       } )
     })

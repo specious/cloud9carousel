@@ -25,13 +25,13 @@ h1 {
   font-family: sans-serif;
   text-shadow: 2px 3px 3px #127E7A;
 }
-#wrap {
+.wrap {
   width: 980px; /* fixed width, centered in viewport */
   left: -490px;
   margin-left: 50%;
   position: relative;
 }
-#wrap > h1 {
+.wrap > h1 {
   font-size: 2.5em;
   text-align: center;
   padding-bottom: 3px;
@@ -45,34 +45,6 @@ h1 {
 footer {
   display: block;
   position: relative;
-}
-#nav {
-  text-align: center;
-}
-#nav > button {
-  width: 64px;
-  height: 36px;
-  color: #666;
-  font: bold 16px arial;
-  text-decoration: none;
-  text-align: center;
-  margin: 5px;
-  text-shadow: 0px 1px 0px #f5f5f5;
-  background: #f6f6f6;
-  border: solid 2px rgba(0, 0, 0, 0.4);
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  -webkit-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 9px 1px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-}
-#nav > button:active,
-#nav > button.down {
-  background: #dfdfdf;
-  border: solid 2px rgba(0, 0, 0, 0.6);
-  box-shadow: none;
 }
 #get {
   font-size: 20px;
