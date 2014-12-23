@@ -100,11 +100,9 @@
     }
   }
 
-  var time = (function() {
-    return !window.performance || !window.performance.now ?
-      function() { return +new Date() } :
-      function() { return performance.now() };
-  })();
+  var time = !window.performance || !window.performance.now ?
+    function() { return +new Date() } :
+    function() { return performance.now() };
 
   //
   // Detect requestAnimationFrame() support
