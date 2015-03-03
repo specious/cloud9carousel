@@ -278,15 +278,19 @@
     }
 
     this.bindControls = function() {
-      options.buttonLeft.bind( 'click', function() {
-        self.go( -1 );
-        return false;
-      } );
+      if( options.buttonLeft ) {
+        options.buttonLeft.bind( 'click', function() {
+          self.go( -1 );
+          return false;
+        } );
+      }
 
-      options.buttonRight.bind( 'click', function() {
-        self.go( 1 );
-        return false;
-      } );
+      if( options.buttonRight ) {
+        options.buttonRight.bind( 'click', function() {
+          self.go( 1 );
+          return false;
+        } );
+      }
 
       if( options.mouseWheel ) {
         $container.bind( 'mousewheel.cloud9', function( event, delta ) {
