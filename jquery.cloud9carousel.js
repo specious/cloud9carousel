@@ -1,5 +1,5 @@
 /*
- * Cloud 9 Carousel 2.0
+ * Cloud 9 Carousel 2.0.1
  *   Cleaned up, refactored, and improved version of CloudCarousel
  *
  * See the demo and get the latest version on GitHub:
@@ -251,8 +251,8 @@
     this.deactivate = function() {
       this.pause();
       clearInterval( this.autoPlayTimer );
-      options.buttonLeft.unbind( 'click' );
-      options.buttonRight.unbind( 'click' );
+      if( options.buttonLeft ) options.buttonLeft.unbind( 'click' );
+      if( options.buttonRight ) options.buttonRight.unbind( 'click' );
       $container.unbind( '.cloud9' );
     }
 
