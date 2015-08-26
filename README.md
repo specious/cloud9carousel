@@ -22,7 +22,7 @@ A 3D perspective carousel using jQuery/Zepto focused on performance, based on th
 
 <a href="http://specious.github.io/cloud9carousel/species.html">![Endangered species](http://specious.github.io/cloud9carousel/images/screenshots/demo-species.png "Demo: Endangered species")</a>
 <a href="http://specious.github.io/cloud9carousel/">![Web browsers](http://specious.github.io/cloud9carousel/images/screenshots/demo-browsers.png "Demo: Web browsers")</a>
-<a href="http://www.julemagne.com/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Julemagne.com - Fine art")</a>
+<a href="http://specious.github.io/portfolio/demos/julemagne/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Fine art by Julie David")</a>
 
 ## Dependencies
 
