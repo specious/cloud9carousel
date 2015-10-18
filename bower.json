@@ -1,0 +1,28 @@
+{
+  "name": "cloud9carousel",
+  "version": "1.0.0",
+  "homepage": "http://webninja.io/cloud9carousel/",
+  "authors": [
+    "Ildar Sagdejev <specious@gmail.com>"
+  ],
+  "description": "A 3D perspective carousel using jQuery/Zepto focused on performance, based on the original CloudCarousel by Professor Cloud.",
+  "main": "jquery.cloud9carousel.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "jquery",
+    "zepto",
+    "carousel",
+    "3d",
+    "slider"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
