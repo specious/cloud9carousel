@@ -220,7 +220,7 @@ mirror: {
 The following methods can be called on the carousel object after initialisation.  For example:
 
 ```js
-// Spin by three items clockwise
+// Spin three items clockwise
 $("#carousel").data("carousel").go( 3 );
 ```
 

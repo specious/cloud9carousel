@@ -1,5 +1,5 @@
 /*
- * Cloud 9 Carousel 2.0.3
+ * Cloud 9 Carousel 2.0.4
  *   3D perspective carousel plugin for jQuery/Zepto with a focus on slick
  *   performance, based on the original CloudCarousel by Professor Cloud.
  *
@@ -159,7 +159,7 @@
     //  *   Pi/2 : front
     //  *   Pi   : left
     //  * 3 Pi/2 : back
-    this.rotateItem = function( itemIndex, rotation ) {
+    this.renderItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
       var sin = Math.sin(rotation);
       var farScale = this.farScale;
@@ -178,7 +178,7 @@
       var radians = this.rotation;
 
       for( var i = 0; i < count; i++ ) {
-        this.rotateItem( i, radians );
+        this.renderItem( i, radians );
         radians += spacing;
       }
 
