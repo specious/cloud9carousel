@@ -1,12 +1,14 @@
 /*
- * Cloud 9 Carousel 2.0
- *   Cleaned up, refactored, and improved version of CloudCarousel
+ * Cloud 9 Carousel 2.0.4
+ *   3D perspective carousel plugin for jQuery/Zepto with a focus on slick
+ *   performance, based on the original CloudCarousel by Professor Cloud.
  *
- * See the demo and get the latest version on GitHub:
+ * See the demo and get the latest version:
  *   http://specious.github.io/cloud9carousel/
  *
- * Copyright (c) 2014 by Ildar Sagdejev ( http://twitter.com/tknomad )
+ * Copyright (c) 2015 by Ildar Sagdejev ( http://specious.github.io )
  * Copyright (c) 2011 by R. Cecco ( http://www.professorcloud.com )
+ *
  * MIT License
  *
  * Please retain this copyright header in all versions of the software
@@ -100,11 +102,9 @@
     }
   }
 
-  var time = (function() {
-    return !window.performance || !window.performance.now ?
-      function() { return +new Date() } :
-      function() { return performance.now() };
-  })();
+  var time = !window.performance || !window.performance.now ?
+    function() { return +new Date() } :
+    function() { return performance.now() };
 
   //
   // Detect requestAnimationFrame() support
@@ -159,7 +159,7 @@
     //  *   Pi/2 : front
     //  *   Pi   : left
     //  * 3 Pi/2 : back
-    this.rotateItem = function( itemIndex, rotation ) {
+    this.renderItem = function( itemIndex, rotation ) {
       var item = this.items[itemIndex];
       var sin = Math.sin(rotation);
       var farScale = this.farScale;
@@ -178,7 +178,7 @@
       var radians = this.rotation;
 
       for( var i = 0; i < count; i++ ) {
-        this.rotateItem( i, radians );
+        this.renderItem( i, radians );
         radians += spacing;
       }
 
@@ -253,8 +253,8 @@
     this.deactivate = function() {
       this.pause();
       clearInterval( this.autoPlayTimer );
-      options.buttonLeft.unbind( 'click' );
-      options.buttonRight.unbind( 'click' );
+      if( options.buttonLeft ) options.buttonLeft.unbind( 'click' );
+      if( options.buttonRight ) options.buttonRight.unbind( 'click' );
       $container.unbind( '.cloud9' );
     }
 
@@ -280,15 +280,19 @@
     }
 
     this.bindControls = function() {
-      options.buttonLeft.bind( 'click', function() {
-        self.go( -1 );
-        return false;
-      } );
+      if( options.buttonLeft ) {
+        options.buttonLeft.bind( 'click', function() {
+          self.go( -1 );
+          return false;
+        } );
+      }
 
-      options.buttonRight.bind( 'click', function() {
-        self.go( 1 );
-        return false;
-      } );
+      if( options.buttonRight ) {
+        options.buttonRight.bind( 'click', function() {
+          self.go( 1 );
+          return false;
+        } );
+      }
 
       if( options.mouseWheel ) {
         $container.bind( 'mousewheel.cloud9', function( event, delta ) {
@@ -306,11 +310,17 @@
             var count = self.items.length;
             var diff = idx - (self.floatIndex() % count);
 
-            // Choose direction based on which way is shortest
+            // Normalise "diff" to represent the shortest way to rotate item to front
             if( 2 * Math.abs(diff) > count )
               diff += (diff > 0) ? -count : count;
 
+            // Suppress default browser action if the item isn't roughly in front
+            if( Math.abs(diff) > 0.5 )
+              event.preventDefault();
+
+            // Halt any rotation already in progress
             self.destRotation = self.rotation;
+
             self.go( -diff );
           }
         } );
