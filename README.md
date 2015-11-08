@@ -1,6 +1,6 @@
 # Cloud 9 Carousel
 
-A 3D perspective carousel using jQuery/Zepto focused on performance, based on the original [CloudCarousel](http://webscripts.softpedia.com/script/Image-Galleries/Image-Tools/Cloud-Carousel-65275.html) by [Professor Cloud](#authors).
+A 3D perspective carousel using jQuery/Zepto focused on performance, based on the [original Cloud Carousel](https://github.com/specious/cloud9carousel/blob/32df63d07096911e3e48b5a721c4c46c1c6f74e8/jquery.cloud9carousel.js) by [Professor Cloud](#authors).
 
 ## Features
 
