@@ -1,0 +1,28 @@
+{
+  "name": "cloud9carousel",
+  "version": "2.0.4",
+  "title": "Cloud 9 Carousel",
+  "description": "3D perspective carousel for jQuery/Zepto with a focus on slick performance",
+  "homepage": "http://specious.github.io/cloud9carousel/",
+  "license": "MIT",
+  "keywords": [
+    "jquery-plugin",
+    "zepto-plugin",
+    "ui",
+    "carousel",
+    "ecosystem:jquery",
+    "ecosystem:zepto"
+  ],
+  "author": "Ildar Sagdejev <specious@gmail.com> (http://specious.github.io/)",
+  "contributors": [
+    "Raffaele Cecco (http://www.professorcloud.com/)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "specious/cloud9carousel"
+  },
+  "bugs": "https://github.com/specious/cloud9carousel/issues",
+  "dependencies": {
+    "jquery": ">=1.3"
+  }
+}
