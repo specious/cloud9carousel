@@ -24,5 +24,6 @@
   "bugs": "https://github.com/specious/cloud9carousel/issues",
   "dependencies": {
     "jquery": ">=1.3"
-  }
+  },
+  "main": "jquery.cloud9carousel.js"
 }
