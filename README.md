@@ -306,6 +306,10 @@ $("#carousel").css( 'visibility', 'hidden' ).Cloud9Carousel( {
     <td>onRendered</td>
     <td>Fires each time after a frame has finished calculating</td>
   </tr>
+  <tr>
+    <td>onAnimationFinished</td>
+    <td>Fires when the carousel has finished spinning</td>
+  </tr>
 </table>
 
 ## Authors
