@@ -1,22 +1,21 @@
 # Cloud 9 Carousel
 
-A 3D perspective carousel using jQuery/Zepto focused on performance, based on the [original Cloud Carousel](https://github.com/specious/cloud9carousel/blob/32df63d07096911e3e48b5a721c4c46c1c6f74e8/jquery.cloud9carousel.js) by [Professor Cloud](#authors).
+A 3D perspective carousel for jQuery/Zepto focused on performance, based on the [original Cloud Carousel](https://github.com/specious/cloud9carousel/blob/32df63d07096911e3e48b5a721c4c46c1c6f74e8/jquery.cloud9carousel.js) by [Professor Cloud](#authors).
 
 ## Features
 
-- Just one JavaScript file
-- Works with [jQuery](http://jquery.com/) **or** [Zepto](http://zeptojs.com/)
-- Fast
+- Works with [jQuery](http://jquery.com/) and [Zepto](http://zeptojs.com/)
+- Extremely fast
 - [Easy to use](#basic-usage)
 - *(optional)* Reflections (via [reflection.js](http://www.digitalia.be/software/reflectionjs-for-jquery))
 - *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) [see: [note](#known-issues)]
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
-- Smooth animation via [requestAnimationFrame](http://ie.microsoft.com/testdrive/Graphics/RequestAnimationFrame/) with fixed-FPS fallback mode
-- Harness the power of the GPU with CSS transforms (detects [support](http://caniuse.com/transforms) automatically)
+- Smooth animation via [requestAnimationFrame](https://developer.mozilla.org/docs/Web/API/window/requestAnimationFrame) with fixed-FPS fallback mode
+- GPU acceleration through CSS transforms ([support](http://caniuse.com/transforms) detected automatically)
 - Create multiple instances
-- Handy [callback events](#event-callbacks)
-- Works with any HTML element!
+- Items can be any HTML element
+- Convenient [callback events](#event-callbacks)
 
 ## Demos
 
