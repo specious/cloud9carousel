@@ -254,7 +254,14 @@
       this.play();
     }
 
-    
+    this.getItemByAttribute = function (targetAttribute, targetValue){
+        for (var i=0; i< this.items.length ; i++){
+            var value = this.items[i].element.getAttribute(targetAttribute);
+            if(value === targetValue){
+                return this.items[i];
+            }
+        }
+    };
     this.goto = function (item){
         if( this.items.length !== 0 ) {
             var idx = this.items.indexOf(item);
