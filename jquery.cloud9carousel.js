@@ -254,6 +254,23 @@
       this.play();
     }
 
+    
+    this.goto = function (item){
+        if( this.items.length !== 0 ) {
+            var idx = this.items.indexOf(item);
+            var count = this.items.length;
+            var diff = idx - (this.floatIndex() % count);
+            if( 2 * Math.abs(diff) > count )
+                diff += (diff > 0) ? -count : count;
+           this.destRotation = this.rotation;
+           this.go( -diff );
+      }
+    };
+    
+    this.logItems = function (){
+        console.log(this.items);
+    };
+    
     this.deactivate = function() {
       this.pause();
       clearInterval( this.autoPlayTimer );
