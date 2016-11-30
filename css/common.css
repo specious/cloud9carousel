@@ -68,8 +68,7 @@ footer {
   vertical-align: top;
 }
 .twitter-share-button {
-  width: 84px !important;
-  margin-left: 8px;
+  margin-left: 8px; /* give facebook some space */
 }
 #credits {
   color: #c9c9c9;
