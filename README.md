@@ -8,14 +8,14 @@ A 3D perspective carousel for jQuery/Zepto focused on performance, based on the 
 - Extremely fast
 - [Easy to use](#basic-usage)
 - *(optional)* Reflections (via [reflection.js](http://www.digitalia.be/software/reflectionjs-for-jquery))
-- *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) [see: [note](#known-issues)]
+- *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) [see: [known issues](#known-issues)]
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
 - Smooth animation via [requestAnimationFrame](https://developer.mozilla.org/docs/Web/API/window/requestAnimationFrame) with fixed-FPS fallback mode
 - GPU acceleration through CSS transforms ([support](http://caniuse.com/transforms) detected automatically)
 - Create multiple instances
 - Items can be any HTML element
-- Convenient [callback events](#event-callbacks)
+- Convenient [event callbacks](#event-callbacks)
 
 ## Demos
 
@@ -237,6 +237,11 @@ Basic methods:
     <td><b>count</b>: Number of carousel items to rotate (<b>+</b> is clockwise, <b>-</b> is counterclockwise)</td>
   </tr>
   <tr>
+    <td>goTo( index )</td>
+    <td>Spin the carousel to a specific item</td>
+    <td><b>index</b>: Index of the carousel item to rotate to</td>
+  </tr>
+  <tr>
     <td>nearestIndex()</td>
     <td>Returns the 0-based index of the item nearest to the front <b>(integer)</b></td>
     <td>none</td>
@@ -319,8 +324,8 @@ $("#carousel").css( 'visibility', 'hidden' ).Cloud9Carousel( {
 
 ## Known issues
 
-- Due to lack of standartisation, "mousewheel" scrolling is ridiculously sensitive and unmanageable when using some track pads (such as on the MacBook Pro).  Unfortunately, since there appears to be no way to know directly what type of device is triggering the mousewheel events, it is not trivial to somehow normalise or "tame" the input from the track pad without also affecting the "1 tick per click" behaviour of the standard mouse wheel.  **darsain** has described the same phenomenon in [this discussion](https://github.com/darsain/sly/issues/67) at the sly.js project.  Ideas are [appreciated](https://github.com/specious/cloud9carousel/issues/1).
+- Due to lack of standartisation, "mousewheel" scrolling is extremely sensitive and unmanageable when using some track pads (such as on the MacBook Pro).  Unfortunately, since there appears to be no way to know directly what type of device is triggering the mousewheel events, it is not trivial to somehow normalise or "tame" the input from the track pad without also affecting the "1 tick per click" behaviour of the standard mouse wheel.  **darsain** has described the same phenomenon in [this discussion](https://github.com/darsain/sly/issues/67) at the sly.js project.  Ideas are [appreciated](https://github.com/specious/cloud9carousel/issues/1).
 
 ## License
 
-Licensed under the [MIT License](http://en.wikipedia.org/wiki/MIT_License)
+[MIT](http://en.wikipedia.org/wiki/MIT_License)

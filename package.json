@@ -1,6 +1,6 @@
 {
   "name": "cloud9carousel",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "title": "Cloud 9 Carousel",
   "description": "3D perspective carousel for jQuery/Zepto with a focus on slick performance",
   "homepage": "http://specious.github.io/cloud9carousel/",

@@ -1,12 +1,14 @@
 /*
- * Cloud 9 Carousel 2.0.5
- *   3D perspective carousel plugin for jQuery/Zepto with a focus on slick
- *   performance, based on the original CloudCarousel by Professor Cloud.
+ * Cloud 9 Carousel 2.1.0
  *
- * See the demo and get the latest version:
+ * Pseudo-3D carousel plugin for jQuery/Zepto focused on performance.
+ *
+ * Based on the original CloudCarousel by R. Cecco.
+ *
+ * See the demo and download the latest version:
  *   http://specious.github.io/cloud9carousel/
  *
- * Copyright (c) 2015 by Ildar Sagdejev ( http://specious.github.io )
+ * Copyright (c) 2016 by Ildar Sagdejev ( http://specious.github.io )
  * Copyright (c) 2011 by R. Cecco ( http://www.professorcloud.com )
  *
  * MIT License
@@ -91,7 +93,7 @@
       if( transform && options.transforms ) {
         style[transform] = "translate(" + x + "px, " + y + "px) scale(" + scale + ")";
       } else {
-        // The gap between the image and its reflection doesn't resize automatically
+        // Manually resize the gap between the image and its reflection
         if( options.mirror && this.element.tagName === 'IMG' )
           this.reflection.style.marginTop = (options.mirror.gap * scale) + "px";
 
@@ -200,7 +202,7 @@
         if( typeof self.onAnimationFinished === 'function' )
           self.onAnimationFinished();
       } else {
-        // Rotate asymptotically closer to the destination
+        // Asymptotically approach the destination
         self.rotation = self.destRotation - rem / (1 + (self.speed * dt));
         self.scheduleNextFrame();
       }
@@ -247,11 +249,30 @@
     }
 
     //
-    // Spin the carousel.  Count is the number (+-) of carousel items to rotate
+    // Spin the carousel by (+-) count items
     //
     this.go = function( count ) {
       this.destRotation += (2 * Math.PI / this.items.length) * count;
       this.play();
+    }
+
+    this.goTo = function( index ) {
+      var count = this.items.length;
+
+      // Find the shortest way to rotate item to front
+      var diff = index - (this.floatIndex() % count);
+
+      if( 2 * Math.abs(diff) > count )
+        diff -= (diff > 0) ? count : -count;
+
+      // Halt any rotation already in progress
+      this.destRotation = this.rotation;
+
+      // Spin the opposite way to bring item to front
+      this.go( -diff );
+
+      // Return rotational distance (in items) to the target
+      return diff;
     }
 
     this.deactivate = function() {
@@ -310,22 +331,11 @@
           var hits = $(event.target).closest( '.' + options.itemClass );
 
           if( hits.length !== 0 ) {
-            var idx = self.items.indexOf( hits[0].item );
-            var count = self.items.length;
-            var diff = idx - (self.floatIndex() % count);
-
-            // Normalise "diff" to represent the shortest way to rotate item to front
-            if( 2 * Math.abs(diff) > count )
-              diff += (diff > 0) ? -count : count;
+            var diff = self.goTo( self.items.indexOf( hits[0].item ) );
 
             // Suppress default browser action if the item isn't roughly in front
             if( Math.abs(diff) > 0.5 )
               event.preventDefault();
-
-            // Halt any rotation already in progress
-            self.destRotation = self.rotation;
-
-            self.go( -diff );
           }
         } );
       }
