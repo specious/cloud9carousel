@@ -1,5 +1,5 @@
 /*
- * Cloud 9 Carousel 2.1.0
+ * Cloud 9 Carousel 2.2.0
  *
  * Pseudo-3D carousel plugin for jQuery/Zepto focused on performance.
  *
@@ -8,7 +8,7 @@
  * See the demo and download the latest version:
  *   http://specious.github.io/cloud9carousel/
  *
- * Copyright (c) 2016 by Ildar Sagdejev ( http://specious.github.io )
+ * Copyright (c) 2017 by Ildar Sagdejev ( http://specious.github.io )
  * Copyright (c) 2011 by R. Cecco ( http://www.professorcloud.com )
  *
  * MIT License
@@ -16,7 +16,7 @@
  * Please retain this copyright header in all versions of the software
  *
  * Requires:
- *  - jQuery 1.3.0 or later -OR- Zepto 1.1.1 or later
+ *  - jQuery >= 1.3.0 or Zepto >= 1.1.1
  *
  * Optional (jQuery only):
  *  - Reflection support via reflection.js plugin by Christophe Beyls
@@ -143,6 +143,7 @@
     this.autoPlayAmount = options.autoPlay;
     this.autoPlayDelay = options.autoPlayDelay;
     this.autoPlayTimer = 0;
+    this.frontItemClass = options.frontItemClass;
     this.onLoaded = options.onLoaded;
     this.onRendered = options.onRendered;
     this.onAnimationFinished = options.onAnimationFinished;
@@ -173,15 +174,24 @@
         this.yOrigin + (scale * sin * this.yRadius),
         scale
       );
+
+      return item;
     }
 
     this.render = function() {
       var count = this.items.length;
       var spacing = 2 * Math.PI / count;
       var radians = this.rotation;
+      var nearest = this.nearestIndex();
 
       for( var i = 0; i < count; i++ ) {
-        this.renderItem( i, radians );
+        var item = this.renderItem( i, radians );
+
+        if( i === nearest )
+          $(item.element).addClass( this.frontItemClass );
+        else
+          $(item.element).removeClass( this.frontItemClass );
+
         radians += spacing;
       }
 
@@ -394,6 +404,7 @@
         autoPlayDelay: 4000,
         bringToFront: false,
         itemClass: 'cloud9-item',
+        frontItemClass: null,
         handle: 'carousel'
       }, options );
 

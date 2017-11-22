@@ -8,7 +8,7 @@ A 3D perspective carousel for jQuery/Zepto focused on performance, based on the 
 - Extremely fast
 - [Easy to use](#basic-usage)
 - *(optional)* Reflections (via [reflection.js](http://www.digitalia.be/software/reflectionjs-for-jquery))
-- *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) [see: [known issues](#known-issues)]
+- *(optional)* Mouse wheel support (via [mousewheel plugin](http://plugins.jquery.com/mousewheel/)) (see: [known issues](#known-issues))
 - *(optional)* Rotate clicked item to front
 - *(optional)* Auto-play
 - Smooth animation via [requestAnimationFrame](https://developer.mozilla.org/docs/Web/API/window/requestAnimationFrame) with fixed-FPS fallback mode
@@ -22,6 +22,8 @@ A 3D perspective carousel for jQuery/Zepto focused on performance, based on the 
 <a href="http://specious.github.io/cloud9carousel/species.html">![Endangered species](http://specious.github.io/cloud9carousel/images/screenshots/demo-species.png "Demo: Endangered species")</a>
 <a href="http://specious.github.io/cloud9carousel/">![Web browsers](http://specious.github.io/cloud9carousel/images/screenshots/demo-browsers.png "Demo: Web browsers")</a>
 <a href="http://specious.github.io/portfolio/demos/julemagne/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Fine art by Julie David")</a>
+
+See the [examples](https://github.com/specious/cloud9carousel/tree/gh-pages) in the `gh-pages` branch.
 
 ## Dependencies
 
@@ -70,10 +72,6 @@ $("#carousel").Cloud9Carousel( {
   bringToFront: true
 } );
 ```
-
-### Advanced usage
-
-See the [example code](https://github.com/specious/cloud9carousel/tree/gh-pages)
 
 ### Carousel options
 
@@ -169,6 +167,11 @@ You may pass these options to the carousel constructor.  Some of these propertie
     <td>itemClass</td>
     <td>Class attribute of the item elements inside the carousel container</td>
     <td>"cloud9-item"</td>
+  </tr>
+  <tr>
+    <td>frontItemClass</td>
+    <td>Class attribute automatically added to the front-most item element</td>
+    <td>none</td>
   </tr>
   <tr>
     <td>handle</td>
@@ -317,10 +320,14 @@ $("#carousel").css( 'visibility', 'hidden' ).Cloud9Carousel( {
   </tr>
 </table>
 
+## Further questions?
+
+Please check [what's been asked](https://github.com/specious/cloud9carousel/issues?q=label:question). If not, take your time and [ask a good one](https://stackoverflow.com/help/how-to-ask).
+
 ## Authors
 
-- Upgrades by [Ildar Sagdejev](http://twitter.com/tknomad)
-- Forked from CloudCarousel v1.0.5 by [Professor Cloud](http://www.professorcloud.com/) (R. Cecco)
+- Upgrades by [Ildar Sagdejev](http://specious.github.io)
+- Forked from CloudCarousel v1.0.5 by [Professor Cloud](http://www.professorcloud.com) (R. Cecco)
 
 ## Known issues
 
