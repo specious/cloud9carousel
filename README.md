@@ -22,8 +22,9 @@ A 3D perspective carousel for jQuery/Zepto focused on performance, based on the 
 <a href="http://specious.github.io/cloud9carousel/species.html">![Endangered species](http://specious.github.io/cloud9carousel/images/screenshots/demo-species.png "Demo: Endangered species")</a>
 <a href="http://specious.github.io/cloud9carousel/">![Web browsers](http://specious.github.io/cloud9carousel/images/screenshots/demo-browsers.png "Demo: Web browsers")</a>
 <a href="http://specious.github.io/portfolio/demos/julemagne/">![Julemagne.com](http://specious.github.io/cloud9carousel/images/screenshots/julemagne.png "Fine art by Julie David")</a>
+<a href="https://jsfiddle.net/petrovnn/aj4xyfoc/">![Flat top-down layout demo](http://specious.github.io/cloud9carousel/images/screenshots/demo-flat-topdown.png "Flat top-down layout")</a>
 
-See the [examples](https://github.com/specious/cloud9carousel/tree/gh-pages) in the `gh-pages` branch.
+View the [examples](https://github.com/specious/cloud9carousel/tree/gh-pages) in the `gh-pages` branch.
 
 ## Dependencies
 
